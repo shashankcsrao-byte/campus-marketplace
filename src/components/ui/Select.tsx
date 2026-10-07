@@ -19,12 +19,12 @@ export default function Select({ label, error, hint, id, wrapperClassName, class
           id={inputId}
           aria-invalid={!!error || undefined}
           aria-describedby={error ? `${inputId}-error` : undefined}
-          className={`${fieldClasses(!!error)} appearance-none pr-10 ${className}`}
+          className={`${fieldClasses(!!error)} cursor-pointer appearance-none pr-10 ${className}`}
           {...rest}
         >
           {children}
         </select>
-        <ChevronDownIcon className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-slate-500" />
+        <ChevronDownIcon className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-ink" />
       </div>
     </FieldWrapper>
   );

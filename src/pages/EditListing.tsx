@@ -66,8 +66,8 @@ export default function EditListing() {
   return (
     <div className="mx-auto max-w-3xl">
       <header className="mb-6">
-        <h1 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">Edit listing</h1>
-        <p className="mt-1 truncate text-slate-500">{listing.title}</p>
+        <h1 className="text-3xl font-bold text-ink sm:text-4xl">Edit listing</h1>
+        <p className="mt-1 truncate font-medium text-slate-600">{listing.title}</p>
       </header>
       <ListingForm initial={listing} submitLabel="Save changes" progressLabel={progress} onSubmit={handleSubmit} onCancel={() => navigate(-1)} />
     </div>

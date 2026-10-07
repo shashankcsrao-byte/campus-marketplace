@@ -1,4 +1,4 @@
-const SIZES = { sm: 'size-4 border-2', md: 'size-6 border-2', lg: 'size-10 border-[3px]' };
+const SIZES = { sm: 'size-4 border-2', md: 'size-7 border-[3px]', lg: 'size-12 border-4' };
 
 export default function Spinner({ size = 'md', className = '' }: { size?: keyof typeof SIZES; className?: string }) {
   return (
@@ -12,9 +12,11 @@ export default function Spinner({ size = 'md', className = '' }: { size?: keyof 
 
 export function FullPageSpinner({ label = 'Loading...' }: { label?: string }) {
   return (
-    <div className="flex min-h-[50vh] flex-col items-center justify-center gap-3 text-slate-500">
-      <Spinner size="lg" />
-      <p className="text-sm">{label}</p>
+    <div className="flex min-h-[50vh] flex-col items-center justify-center gap-4 text-ink">
+      <div className="card-pop flex size-20 items-center justify-center bg-sun">
+        <Spinner size="lg" className="!text-ink" />
+      </div>
+      <p className="font-display text-base font-semibold">{label}</p>
     </div>
   );
 }

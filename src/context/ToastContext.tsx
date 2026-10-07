@@ -15,9 +15,9 @@ interface ToastContextValue {
 const ToastContext = createContext<ToastContextValue | null>(null);
 
 const STYLES: Record<ToastType, string> = {
-  success: 'border-emerald-200 bg-white text-slate-800 [&_svg]:text-emerald-600',
-  error: 'border-red-200 bg-white text-slate-800 [&_svg]:text-red-600',
-  info: 'border-brand-200 bg-white text-slate-800 [&_svg]:text-brand-600',
+  success: 'bg-mint',
+  error: 'bg-red-300',
+  info: 'bg-sky',
 };
 
 export function ToastProvider({ children }: { children: ReactNode }) {
@@ -48,21 +48,25 @@ export function ToastProvider({ children }: { children: ReactNode }) {
           <div
             key={t.id}
             role={t.type === 'error' ? 'alert' : 'status'}
-            className={`pointer-events-auto flex w-full max-w-sm animate-slide-in items-start gap-3 rounded-xl border p-3.5 shadow-lg motion-reduce:animate-none ${STYLES[t.type]}`}
+            className={`pointer-events-auto flex w-full max-w-sm animate-slide-in items-start gap-3 rounded-2xl border-2 border-ink p-3.5 text-ink shadow-pop motion-reduce:animate-none ${STYLES[t.type]}`}
           >
             {t.type === 'error' ? (
-              <WarningIcon className="mt-0.5 size-5 shrink-0" />
+              <span className="flex size-7 shrink-0 items-center justify-center rounded-full border-2 border-ink bg-white">
+                <WarningIcon className="size-4" />
+              </span>
             ) : (
-              <CheckIcon className="mt-0.5 size-5 shrink-0" />
+              <span className="flex size-7 shrink-0 items-center justify-center rounded-full border-2 border-ink bg-white">
+                <CheckIcon className="size-4" />
+              </span>
             )}
-            <p className="flex-1 text-sm font-medium">{t.message}</p>
+            <p className="flex-1 self-center text-sm font-bold">{t.message}</p>
             <button
               type="button"
               onClick={() => dismiss(t.id)}
               aria-label="Dismiss notification"
-              className="-m-1 rounded p-1 text-slate-400 hover:text-slate-600 focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:outline-none"
+              className="-m-1 flex size-8 items-center justify-center rounded-full text-ink hover:bg-white/60 focus-visible:ring-2 focus-visible:ring-ink focus-visible:outline-none"
             >
-              <XIcon className="size-4 !text-slate-400" />
+              <XIcon className="size-4" />
             </button>
           </div>
         ))}

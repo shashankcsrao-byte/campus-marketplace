@@ -23,7 +23,7 @@ export default function ListingImage({
 
   if (!path || failedPath === path) {
     return (
-      <div className={`flex items-center justify-center bg-slate-100 text-slate-300 ${soldCls} ${className}`} role="img" aria-label={alt}>
+      <div className={`flex items-center justify-center bg-brand-100 text-brand-400 ${soldCls} ${className}`} role="img" aria-label={alt}>
         <PhotoIcon className="size-10" />
       </div>
     );
@@ -35,7 +35,7 @@ export default function ListingImage({
       loading={eager ? 'eager' : 'lazy'}
       decoding="async"
       onError={() => setFailedPath(path)}
-      className={`bg-slate-100 ${fit === 'cover' ? 'object-cover' : 'object-contain'} ${soldCls} ${className}`}
+      className={`bg-brand-50 ${fit === 'cover' ? 'object-cover' : 'object-contain'} ${soldCls} ${className}`}
     />
   );
 }

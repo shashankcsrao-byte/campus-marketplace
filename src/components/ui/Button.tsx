@@ -4,24 +4,28 @@ import Spinner from './Spinner';
 export type ButtonVariant = 'primary' | 'secondary' | 'danger' | 'ghost';
 export type ButtonSize = 'sm' | 'md' | 'lg';
 
+// Sticker buttons: ink outline + hard shadow that "presses" on click.
+const POP =
+  'border-2 border-ink shadow-pop-sm transition-[transform,box-shadow,background-color] duration-150 hover:-translate-x-px hover:-translate-y-px hover:shadow-pop active:translate-x-0.5 active:translate-y-0.5 active:shadow-none disabled:translate-0 disabled:shadow-none motion-reduce:transform-none';
+
 const VARIANTS: Record<ButtonVariant, string> = {
-  primary: 'bg-brand-600 text-white shadow-sm hover:bg-brand-700 active:bg-brand-800',
-  secondary: 'border border-slate-300 bg-white text-slate-800 shadow-sm hover:bg-slate-50 active:bg-slate-100',
-  danger: 'bg-red-600 text-white shadow-sm hover:bg-red-700 active:bg-red-800',
-  ghost: 'text-slate-700 hover:bg-slate-100 active:bg-slate-200',
+  primary: `${POP} bg-brand-600 text-white hover:bg-brand-700`,
+  secondary: `${POP} bg-white text-ink hover:bg-sun-soft`,
+  danger: `${POP} bg-red-600 text-white hover:bg-red-700`,
+  ghost: 'border-2 border-transparent text-ink hover:border-ink hover:bg-white active:bg-sun-soft',
 };
 
 const SIZES: Record<ButtonSize, string> = {
-  sm: 'min-h-9 px-3 text-sm gap-1.5',
-  md: 'min-h-11 px-4 text-sm gap-2',
-  lg: 'min-h-12 px-5 text-base gap-2',
+  sm: 'min-h-9 px-3 text-sm gap-1.5 rounded-lg',
+  md: 'min-h-11 px-4 text-sm gap-2 rounded-xl',
+  lg: 'min-h-12 px-6 text-base gap-2 rounded-xl',
 };
 
 /** Shared classes so <Link>s can look like buttons. */
 export function buttonClasses(variant: ButtonVariant = 'primary', size: ButtonSize = 'md', extra = '') {
   return [
-    'inline-flex items-center justify-center rounded-lg font-semibold transition-colors select-none',
-    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2',
+    'inline-flex items-center justify-center font-display font-semibold tracking-wide select-none',
+    'focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-sun focus-visible:ring-offset-2 focus-visible:ring-offset-ink',
     'disabled:cursor-not-allowed disabled:opacity-60',
     VARIANTS[variant],
     SIZES[size],

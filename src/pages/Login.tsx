@@ -50,7 +50,7 @@ export default function Login() {
       footer={
         <>
           New here?{' '}
-          <Link to={`/register${params.get('redirect') ? `?redirect=${encodeURIComponent(redirect)}` : ''}`} className="font-semibold text-brand-600 hover:text-brand-700">
+          <Link to={`/register${params.get('redirect') ? `?redirect=${encodeURIComponent(redirect)}` : ''}`} className="font-bold text-brand-700 underline decoration-2 underline-offset-4 hover:bg-sun">
             Create an account
           </Link>
         </>
@@ -58,7 +58,7 @@ export default function Login() {
     >
       <form onSubmit={handleSubmit} noValidate className="space-y-5">
         {formError && (
-          <p role="alert" className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+          <p role="alert" className="animate-pop-in rounded-xl border-2 border-ink bg-red-300 px-4 py-3 text-sm font-bold text-ink shadow-pop-sm">
             {formError}
           </p>
         )}

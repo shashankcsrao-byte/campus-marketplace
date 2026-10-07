@@ -24,8 +24,10 @@ export default function CreateListing() {
   return (
     <div className="mx-auto max-w-3xl">
       <header className="mb-6">
-        <h1 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">Sell an item</h1>
-        <p className="mt-1 text-slate-500">Good photos and a clear description sell faster.</p>
+        <h1 className="text-3xl font-bold text-ink sm:text-4xl">
+          Sell <span className="marker">something</span>
+        </h1>
+        <p className="mt-1 font-medium text-slate-600">Good photos and a clear description sell faster.</p>
       </header>
       <ListingForm submitLabel="Publish listing" progressLabel={progress} onSubmit={handleSubmit} onCancel={() => navigate(-1)} />
     </div>

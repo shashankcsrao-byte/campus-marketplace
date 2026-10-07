@@ -11,8 +11,8 @@ import { APP_NAME } from '../utils/constants';
 import { toUserMessage } from '../utils/errorMessages';
 
 const navLinkClass = ({ isActive }: { isActive: boolean }) =>
-  `inline-flex min-h-11 items-center gap-2 rounded-lg px-3 text-sm font-medium transition-colors focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:outline-none ${
-    isActive ? 'bg-brand-50 text-brand-700' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+  `inline-flex min-h-11 items-center gap-2 rounded-xl border-2 px-3 font-display text-sm font-semibold transition-colors focus-visible:ring-4 focus-visible:ring-sun focus-visible:outline-none ${
+    isActive ? 'border-ink bg-sun text-ink shadow-pop-sm' : 'border-transparent text-ink hover:border-ink hover:bg-white'
   }`;
 
 export default function Navbar() {
@@ -60,13 +60,13 @@ export default function Navbar() {
   const loginHref = `/login?redirect=${encodeURIComponent(location.pathname + location.search)}`;
 
   return (
-    <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/90 backdrop-blur supports-[backdrop-filter]:bg-white/80">
+    <header className="sticky top-0 z-40 border-b-2 border-ink bg-cream/95 backdrop-blur supports-[backdrop-filter]:bg-cream/85">
       <div className="mx-auto flex h-16 max-w-7xl items-center gap-3 px-4 sm:px-6 lg:gap-6 lg:px-8">
-        <Link to="/" className="flex shrink-0 items-center gap-2 rounded-lg focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:outline-none" aria-label={`${APP_NAME} home`}>
-          <span className="flex size-9 items-center justify-center rounded-xl bg-brand-600 text-white shadow-sm">
+        <Link to="/" className="group flex shrink-0 items-center gap-2 rounded-xl focus-visible:ring-4 focus-visible:ring-sun focus-visible:outline-none" aria-label={`${APP_NAME} home`}>
+          <span className="flex size-10 -rotate-6 items-center justify-center rounded-xl border-2 border-ink bg-sun text-ink shadow-pop-sm transition-transform group-hover:rotate-6 motion-reduce:transition-none">
             <BagIcon className="size-5" />
           </span>
-          <span className="hidden text-lg font-bold tracking-tight text-slate-900 sm:inline">
+          <span className="hidden font-display text-xl font-bold tracking-tight text-ink sm:inline">
             Campus<span className="text-brand-600">Mart</span>
           </span>
         </Link>
@@ -84,7 +84,7 @@ export default function Navbar() {
                 <HeartIcon /> <span className="hidden lg:inline">Favourites</span>
                 <span className="sr-only lg:hidden">Favourites</span>
                 {favoriteIds.size > 0 && (
-                  <span className="rounded-full bg-brand-100 px-1.5 text-xs font-semibold text-brand-700">{favoriteIds.size}</span>
+                  <span className="rounded-full border-2 border-ink bg-bubblegum px-1.5 text-xs font-bold text-ink">{favoriteIds.size}</span>
                 )}
               </NavLink>
               <Link to="/create" className={buttonClasses('primary', 'md', 'ml-2')}>
@@ -97,15 +97,15 @@ export default function Navbar() {
                   aria-haspopup="menu"
                   aria-expanded={menuOpen}
                   aria-label="Account menu"
-                  className="flex min-h-11 items-center rounded-full p-0.5 focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:outline-none"
+                  className="flex min-h-11 items-center rounded-full p-0.5 transition-transform hover:-rotate-6 focus-visible:ring-4 focus-visible:ring-sun focus-visible:outline-none motion-reduce:transition-none"
                 >
                   <Avatar name={displayName} />
                 </button>
                 {menuOpen && (
-                  <div role="menu" className="absolute right-0 mt-2 w-60 animate-fade-in overflow-hidden rounded-xl border border-slate-200 bg-white py-1 shadow-xl motion-reduce:animate-none">
-                    <div className="border-b border-slate-100 px-4 py-3">
-                      <p className="truncate text-sm font-semibold text-slate-900">{profile?.name ?? 'Student'}</p>
-                      <p className="truncate text-xs text-slate-500">{user.email}</p>
+                  <div role="menu" className="absolute right-0 mt-3 w-64 animate-slide-in overflow-hidden rounded-2xl border-2 border-ink bg-white py-1 shadow-pop motion-reduce:animate-none">
+                    <div className="mx-1 mb-1 rounded-xl bg-sun-soft px-4 py-3">
+                      <p className="truncate font-display text-base font-bold text-ink">{profile?.name ?? 'Student'}</p>
+                      <p className="truncate text-xs font-medium text-slate-600">{user.email}</p>
                     </div>
                     <MenuItem to="/my-listings" icon={<ListIcon className="size-4" />}>My Listings</MenuItem>
                     <MenuItem to="/profile" icon={<UserIcon className="size-4" />}>Profile</MenuItem>
@@ -113,7 +113,7 @@ export default function Navbar() {
                       type="button"
                       role="menuitem"
                       onClick={handleLogout}
-                      className="flex w-full items-center gap-3 px-4 py-2.5 text-left text-sm text-red-600 hover:bg-red-50 focus-visible:bg-red-50 focus-visible:outline-none"
+                      className="mt-1 flex w-full items-center gap-3 border-t-2 border-dashed border-slate-200 px-4 py-3 text-left text-sm font-bold text-red-700 hover:bg-red-50 focus-visible:bg-red-50 focus-visible:outline-none"
                     >
                       <LogoutIcon className="size-4" /> Logout
                     </button>
@@ -139,7 +139,7 @@ export default function Navbar() {
           aria-expanded={mobileOpen}
           aria-controls="mobile-menu"
           aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
-          className="ml-auto flex size-11 items-center justify-center rounded-lg text-slate-700 hover:bg-slate-100 focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:outline-none md:hidden"
+          className="ml-auto flex size-11 items-center justify-center rounded-xl border-2 border-ink bg-white text-ink shadow-pop-sm active:translate-x-0.5 active:translate-y-0.5 active:shadow-none focus-visible:ring-4 focus-visible:ring-sun focus-visible:outline-none md:hidden"
         >
           {mobileOpen ? <XIcon className="size-6" /> : <MenuIcon className="size-6" />}
         </button>
@@ -151,14 +151,14 @@ export default function Navbar() {
       </div>
 
       {mobileOpen && (
-        <nav id="mobile-menu" aria-label="Mobile" className="animate-fade-in border-t border-slate-200 bg-white px-4 py-3 motion-reduce:animate-none md:hidden">
+        <nav id="mobile-menu" aria-label="Mobile" className="animate-fade-in border-t-2 border-ink bg-cream px-4 py-4 motion-reduce:animate-none md:hidden">
           {user ? (
             <div className="flex flex-col gap-1">
-              <div className="mb-2 flex items-center gap-3 px-3 py-2">
+              <div className="card-pop mb-3 flex items-center gap-3 !bg-sun-soft px-3 py-3">
                 <Avatar name={displayName} />
                 <div className="min-w-0">
-                  <p className="truncate text-sm font-semibold">{profile?.name ?? 'Student'}</p>
-                  <p className="truncate text-xs text-slate-500">{user.email}</p>
+                  <p className="truncate font-display text-base font-bold">{profile?.name ?? 'Student'}</p>
+                  <p className="truncate text-xs font-medium text-slate-600">{user.email}</p>
                 </div>
               </div>
               <Link to="/create" className={buttonClasses('primary', 'md', 'mb-2')}>
@@ -168,7 +168,7 @@ export default function Navbar() {
               <NavLink to="/favourites" className={navLinkClass}><HeartIcon /> Favourites</NavLink>
               <NavLink to="/my-listings" className={navLinkClass}><ListIcon /> My Listings</NavLink>
               <NavLink to="/profile" className={navLinkClass}><UserIcon /> Profile</NavLink>
-              <button type="button" onClick={handleLogout} className="inline-flex min-h-11 items-center gap-2 rounded-lg px-3 text-sm font-medium text-red-600 hover:bg-red-50">
+              <button type="button" onClick={handleLogout} className="mt-1 inline-flex min-h-11 items-center gap-2 rounded-xl border-2 border-transparent px-3 font-display text-sm font-semibold text-red-700 hover:border-red-700 hover:bg-red-50">
                 <LogoutIcon /> Logout
               </button>
             </div>
@@ -189,9 +189,9 @@ function MenuItem({ to, icon, children }: { to: string; icon: React.ReactNode; c
     <Link
       to={to}
       role="menuitem"
-      className="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 focus-visible:bg-slate-50 focus-visible:outline-none"
+      className="flex items-center gap-3 px-4 py-2.5 text-sm font-semibold text-ink hover:bg-brand-50 focus-visible:bg-brand-50 focus-visible:outline-none"
     >
-      <span className="text-slate-400">{icon}</span>
+      <span className="text-brand-600">{icon}</span>
       {children}
     </Link>
   );

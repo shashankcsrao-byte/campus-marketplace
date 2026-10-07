@@ -36,11 +36,11 @@ export default function FavoriteButton({ listingId, sellerId, title, variant = '
         onClick={onClick}
         aria-pressed={active}
         aria-label={label}
-        className={`inline-flex min-h-11 items-center justify-center gap-2 rounded-lg border px-4 text-sm font-semibold shadow-sm transition-colors focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2 focus-visible:outline-none ${
-          active ? 'border-rose-200 bg-rose-50 text-rose-600 hover:bg-rose-100' : 'border-slate-300 bg-white text-slate-800 hover:bg-slate-50'
+        className={`inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border-2 border-ink px-4 font-display text-sm font-semibold text-ink shadow-pop-sm transition-[transform,box-shadow,background-color] duration-150 hover:-translate-x-px hover:-translate-y-px hover:shadow-pop active:translate-x-0.5 active:translate-y-0.5 active:shadow-none focus-visible:ring-4 focus-visible:ring-sun focus-visible:outline-none motion-reduce:transform-none ${
+          active ? 'bg-bubblegum' : 'bg-white hover:bg-bubblegum-soft'
         }`}
       >
-        <HeartIcon filled={active} className={`size-5 ${active ? 'text-rose-500' : ''}`} />
+        <HeartIcon key={String(active)} filled={active} className={`size-5 ${active ? 'animate-heart-pop text-ink' : ''}`} />
         {active ? 'Saved' : 'Favourite'}
       </button>
     );
@@ -52,9 +52,11 @@ export default function FavoriteButton({ listingId, sellerId, title, variant = '
       onClick={onClick}
       aria-pressed={active}
       aria-label={label}
-      className="flex size-11 items-center justify-center rounded-full bg-white/90 shadow-md backdrop-blur transition hover:scale-105 focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:outline-none active:scale-95 motion-reduce:transition-none"
+      className={`flex size-11 items-center justify-center rounded-full border-2 border-ink shadow-pop-sm transition-transform hover:scale-110 hover:-rotate-6 focus-visible:ring-4 focus-visible:ring-sun focus-visible:outline-none active:scale-95 motion-reduce:transform-none ${
+        active ? 'bg-bubblegum' : 'bg-white'
+      }`}
     >
-      <HeartIcon filled={active} className={`size-5 ${active ? 'text-rose-500' : 'text-slate-700'}`} />
+      <HeartIcon key={String(active)} filled={active} className={`size-5 text-ink ${active ? 'animate-heart-pop' : ''}`} />
     </button>
   );
 }

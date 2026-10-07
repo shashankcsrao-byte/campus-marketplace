@@ -8,7 +8,7 @@ import ListingGrid, { ListingSkeleton } from '../components/listings/ListingGrid
 import { CategoryChips, FilterDrawer, FilterPanel } from '../components/listings/ListingFilters';
 import Button, { buttonClasses } from '../components/ui/Button';
 import { EmptyState, ErrorState } from '../components/ui/States';
-import { FilterIcon, PlusIcon, SearchIcon } from '../components/ui/Icons';
+import { ArrowRightIcon, BikeIcon, BoltIcon, BookIcon, FilterIcon, PlusIcon, RupeeIcon, SearchIcon, ShieldIcon, SparklesIcon } from '../components/ui/Icons';
 import { applyFilterPatch, hasActiveFilters, parseFilters } from '../utils/filters';
 import type { ListingFilters } from '../types';
 
@@ -31,49 +31,96 @@ export default function Home() {
   return (
     <div>
       {!active && (
-        <section className="relative mb-8 overflow-hidden rounded-3xl bg-gradient-to-br from-brand-600 via-brand-700 to-brand-800 px-6 py-10 text-white shadow-lg sm:px-10 sm:py-14">
-          <div className="pointer-events-none absolute -top-16 -right-16 size-64 rounded-full bg-white/10 blur-2xl" />
-          <div className="pointer-events-none absolute -bottom-20 left-1/3 size-72 rounded-full bg-sky-400/20 blur-3xl" />
-          <div className="relative max-w-2xl">
-            <p className="mb-3 inline-block rounded-full bg-white/15 px-3 py-1 text-xs font-semibold tracking-wide uppercase">Student-to-student</p>
-            <h1 className="text-3xl font-extrabold tracking-tight sm:text-4xl lg:text-5xl">Buy & sell on campus, the easy way.</h1>
-            <p className="mt-3 text-base text-brand-100 sm:text-lg">
-              Textbooks, cycles, hostel essentials and more — from students near you. Chat directly, meet on campus.
-            </p>
-            <div className="mt-6 flex flex-wrap gap-3">
-              <Link to={user ? '/create' : '/register'} className={buttonClasses('secondary', 'lg', '!border-white !bg-white !text-brand-700 hover:!bg-brand-50')}>
-                <PlusIcon className="size-5" /> {user ? 'Sell an item' : 'Join free'}
-              </Link>
-              <a href="#listings" className={buttonClasses('ghost', 'lg', '!text-white hover:!bg-white/10')}>
-                Browse listings ↓
-              </a>
+        <section className="relative mb-10 overflow-hidden rounded-[2rem] border-2 border-ink bg-brand-600 px-6 py-10 text-white shadow-pop-lg sm:px-10 sm:py-14">
+          {/* decorative geometric blocks */}
+          <span aria-hidden="true" className="absolute -top-10 -left-10 size-40 rounded-full border-2 border-ink bg-brand-500" />
+          <span aria-hidden="true" className="absolute -right-8 -bottom-12 size-48 rotate-12 rounded-[2.5rem] border-2 border-ink bg-brand-700" />
+
+          <div className="relative grid items-center gap-10 lg:grid-cols-[1.2fr_1fr]">
+            <div>
+              <p className="mb-5 inline-flex -rotate-2 items-center gap-2 rounded-full border-2 border-ink bg-sun px-4 py-1.5 font-display text-sm font-semibold text-ink shadow-pop-sm">
+                <SparklesIcon className="size-4" /> Student-to-student marketplace
+              </p>
+              <h1 className="text-4xl leading-[1.05] font-bold sm:text-5xl lg:text-6xl">
+                Buy, sell &amp; <span className="inline-block -rotate-1 rounded-xl border-2 border-ink bg-sun px-2 text-ink shadow-pop-sm">swap</span> stuff on campus.
+              </h1>
+              <p className="mt-5 max-w-xl text-base font-medium text-brand-50 sm:text-lg">
+                Textbooks, cycles, hostel essentials and more from students near you. Chat instantly, meet on campus, pay in person.
+              </p>
+              <div className="mt-7 flex flex-wrap gap-3">
+                <Link to={user ? '/create' : '/register'} className={buttonClasses('secondary', 'lg', '!bg-sun hover:!bg-white')}>
+                  <PlusIcon className="size-5" /> {user ? 'Sell an item' : 'Join free'}
+                </Link>
+                <a href="#listings" className={buttonClasses('secondary', 'lg')}>
+                  Browse listings <ArrowRightIcon className="size-5 rotate-90" />
+                </a>
+              </div>
+              <ul className="mt-8 flex flex-wrap gap-2 text-sm font-bold text-ink">
+                <li className="inline-flex items-center gap-1.5 rounded-full border-2 border-ink bg-mint px-3 py-1"><RupeeIcon className="size-4" /> Zero fees</li>
+                <li className="inline-flex items-center gap-1.5 rounded-full border-2 border-ink bg-sky px-3 py-1"><BoltIcon className="size-4" /> Live chat</li>
+                <li className="inline-flex items-center gap-1.5 rounded-full border-2 border-ink bg-bubblegum px-3 py-1"><ShieldIcon className="size-4" /> Students only</li>
+              </ul>
+            </div>
+
+            {/* Sticker collage (decorative) */}
+            <div aria-hidden="true" className="relative hidden h-80 lg:block">
+              <div className="absolute top-2 left-6 w-52 rotate-[-8deg] rounded-2xl border-2 border-ink bg-white p-3 text-ink shadow-pop-lg transition-transform hover:rotate-0">
+                <div className="flex h-24 items-center justify-center rounded-xl border-2 border-ink bg-sky"><BookIcon className="size-12" /></div>
+                <p className="mt-2 font-bold">Engineering Maths</p>
+                <span className="mt-1 inline-block rounded-lg border-2 border-ink bg-sun px-2 font-display font-bold">₹350</span>
+              </div>
+              <div className="absolute top-20 right-0 w-52 rotate-[7deg] rounded-2xl border-2 border-ink bg-white p-3 text-ink shadow-pop-lg transition-transform hover:rotate-0">
+                <div className="relative flex h-24 items-center justify-center rounded-xl border-2 border-ink bg-mint">
+                  <BikeIcon className="size-12" />
+                  <span className="absolute -rotate-12 rounded-lg border-[3px] border-red-600 bg-white/90 px-2 font-display text-lg font-bold text-red-600">SOLD!</span>
+                </div>
+                <p className="mt-2 font-bold">Hero Sprint cycle</p>
+                <span className="mt-1 inline-block rounded-lg border-2 border-ink bg-slate-200 px-2 font-display font-bold text-slate-600 line-through">₹2,800</span>
+              </div>
+              <div className="absolute bottom-2 left-0 rotate-[-3deg] rounded-2xl rounded-bl-sm border-2 border-ink bg-white px-4 py-2.5 font-bold text-ink shadow-pop">
+                Is it still available?
+              </div>
+              <div className="absolute right-16 bottom-0 rotate-[4deg] rounded-2xl rounded-br-sm border-2 border-ink bg-sun px-4 py-2.5 font-bold text-ink shadow-pop">
+                Yes! Meet at the library?
+              </div>
             </div>
           </div>
         </section>
       )}
 
-      <div id="listings" className="scroll-mt-32 space-y-4">
+      <div id="listings" className="scroll-mt-32 space-y-5">
         <CategoryChips value={filters.category} onChange={(category) => update({ category })} />
 
-        <div className="flex items-center justify-between gap-3">
+        <div className="flex items-end justify-between gap-3">
           <div>
-            <h2 className="text-xl font-bold text-slate-900 sm:text-2xl">
-              {filters.q ? <>Results for “{filters.q}”</> : filters.category || 'Latest listings'}
+            <h2 className="text-2xl font-bold text-ink sm:text-3xl">
+              {filters.q ? (
+                <>
+                  Results for <span className="marker">“{filters.q}”</span>
+                </>
+              ) : (
+                <span className="marker">{filters.category || 'Fresh drops'}</span>
+              )}
             </h2>
-            <p className="text-sm text-slate-500" aria-live="polite">
+            <p className="mt-1 text-sm font-semibold text-slate-600" aria-live="polite">
               {loading ? 'Loading listings...' : count !== null ? `${count} ${count === 1 ? 'listing' : 'listings'} found` : ''}
             </p>
           </div>
           <Button variant="secondary" className="lg:hidden" onClick={() => setDrawerOpen(true)}>
             <FilterIcon /> Filters
-            {active && <span className="size-2 rounded-full bg-brand-600" aria-label="(active)" />}
+            {active && <span className="size-2.5 rounded-full border border-ink bg-bubblegum" aria-label="(active)" />}
           </Button>
         </div>
 
         <div className="grid gap-6 lg:grid-cols-[240px_1fr]">
           <aside className="hidden lg:block" aria-label="Filters">
-            <div className="sticky top-24 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-              <h3 className="mb-4 font-semibold text-slate-900">Filters</h3>
+            <div className="card-pop sticky top-24 p-5">
+              <h3 className="mb-4 flex items-center gap-2 text-lg font-bold text-ink">
+                <span className="flex size-8 -rotate-6 items-center justify-center rounded-lg border-2 border-ink bg-sun">
+                  <FilterIcon className="size-4" />
+                </span>
+                Filters
+              </h3>
               <FilterPanel filters={filters} onChange={update} onClear={clear} />
             </div>
           </aside>
@@ -106,9 +153,9 @@ export default function Home() {
                     <ListingCard key={l.id} listing={l} />
                   ))}
                 </ListingGrid>
-                {error && <p className="mt-4 text-center text-sm text-red-600">{error}</p>}
+                {error && <p className="mt-4 text-center text-sm font-semibold text-red-700">{error}</p>}
                 {hasMore && (
-                  <div className="mt-8 flex justify-center">
+                  <div className="mt-10 flex justify-center">
                     <Button variant="secondary" size="lg" onClick={loadMore} loading={loadingMore} loadingText="Loading...">
                       Load more
                     </Button>

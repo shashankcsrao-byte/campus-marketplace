@@ -14,10 +14,18 @@ export function EmptyState({
   action?: ReactNode;
 }) {
   return (
-    <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-slate-300 bg-white px-6 py-14 text-center">
-      {icon && <div className="mb-4 flex size-14 items-center justify-center rounded-full bg-brand-50 text-brand-600">{icon}</div>}
-      <h2 className="text-lg font-semibold text-slate-900">{title}</h2>
-      {description && <p className="mt-1.5 max-w-sm text-sm text-slate-500">{description}</p>}
+    <div className="card-pop relative flex flex-col items-center justify-center overflow-hidden px-6 py-14 text-center">
+      {/* decorative confetti blocks */}
+      <span aria-hidden="true" className="absolute top-6 left-8 size-5 rotate-12 rounded-md border-2 border-ink bg-sun" />
+      <span aria-hidden="true" className="absolute right-10 bottom-8 size-4 -rotate-12 rounded-full border-2 border-ink bg-bubblegum" />
+      <span aria-hidden="true" className="absolute top-10 right-16 hidden size-3 rounded-sm border-2 border-ink bg-mint sm:block" />
+      {icon && (
+        <div className="mb-5 flex size-16 -rotate-6 items-center justify-center rounded-2xl border-2 border-ink bg-sun text-ink shadow-pop transition-transform hover:animate-wiggle">
+          {icon}
+        </div>
+      )}
+      <h2 className="text-xl font-bold text-ink">{title}</h2>
+      {description && <p className="mt-2 max-w-sm text-sm font-medium text-slate-600">{description}</p>}
       {action && <div className="mt-6">{action}</div>}
     </div>
   );
@@ -31,11 +39,11 @@ export function ErrorState({
   onRetry?: () => void;
 }) {
   return (
-    <div role="alert" className="flex flex-col items-center justify-center rounded-2xl border border-red-200 bg-red-50/60 px-6 py-12 text-center">
-      <div className="mb-3 flex size-12 items-center justify-center rounded-full bg-red-100 text-red-600">
-        <WarningIcon className="size-6" />
+    <div role="alert" className="card-pop flex flex-col items-center justify-center !bg-red-50 px-6 py-12 text-center">
+      <div className="mb-4 flex size-14 rotate-6 items-center justify-center rounded-2xl border-2 border-ink bg-red-400 text-ink shadow-pop">
+        <WarningIcon className="size-7" />
       </div>
-      <p className="font-medium text-slate-800">{message}</p>
+      <p className="font-display text-lg font-semibold text-ink">{message}</p>
       {onRetry && (
         <Button variant="secondary" className="mt-5" onClick={onRetry}>
           Try again

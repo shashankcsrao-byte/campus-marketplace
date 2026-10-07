@@ -33,7 +33,7 @@ export default function Textarea({
       className={wrapperClassName}
       trailing={
         showCount && maxLength ? (
-          <span className={`text-xs tabular-nums ${length > maxLength * 0.9 ? 'text-amber-600' : 'text-slate-400'}`}>
+          <span className={`rounded-full border-2 border-ink px-2 text-xs font-bold tabular-nums ${length > maxLength * 0.9 ? 'bg-tangerine' : 'bg-white'}`}>
             {length}/{maxLength}
           </span>
         ) : null

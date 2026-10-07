@@ -50,19 +50,22 @@ export default function Profile() {
 
   return (
     <div className="mx-auto max-w-2xl">
-      <h1 className="mb-6 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">Your profile</h1>
+      <h1 className="mb-6 text-3xl font-bold text-ink sm:text-4xl">Your profile</h1>
 
-      <div className="mb-6 flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
-        <Avatar name={profile.name} size="lg" />
-        <div className="min-w-0">
-          <p className="truncate text-lg font-semibold text-slate-900">{profile.name}</p>
-          <p className="truncate text-sm text-slate-500">{user.email}</p>
-          <p className="mt-1 text-xs text-slate-400">Member since {formatDate(profile.created_at)}</p>
+      <div className="card-pop relative mb-8 flex items-center gap-4 overflow-hidden !bg-brand-600 p-5 text-white sm:p-6">
+        <span aria-hidden="true" className="absolute -top-8 -right-8 size-32 rounded-full border-2 border-ink bg-brand-500" />
+        <span className="relative -rotate-6"><Avatar name={profile.name} size="lg" /></span>
+        <div className="relative min-w-0">
+          <p className="truncate font-display text-2xl font-bold">{profile.name}</p>
+          <p className="truncate text-sm font-semibold text-brand-100">{user.email}</p>
+          <p className="mt-2 inline-block rounded-full border-2 border-ink bg-sun px-2.5 text-xs font-bold text-ink">
+            Member since {formatDate(profile.created_at)}
+          </p>
         </div>
       </div>
 
-      <form onSubmit={handleSubmit} noValidate className="space-y-5 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
-        <h2 className="font-semibold text-slate-900">Edit details</h2>
+      <form onSubmit={handleSubmit} noValidate className="card-pop space-y-5 p-5 sm:p-6">
+        <h2 className="text-xl font-bold text-ink">Edit details</h2>
         <Input label="Full name" value={name} maxLength={LIMITS.nameMax} onChange={(e) => setName(e.target.value)} error={errors.name} disabled={saving} />
         <Input label="Campus / college" value={campus} maxLength={LIMITS.campusMax} onChange={(e) => setCampus(e.target.value)} error={errors.campus} disabled={saving} />
         <Input label="Email" value={user.email ?? ''} disabled hint="Email can't be changed here." />

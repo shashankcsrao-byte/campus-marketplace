@@ -57,7 +57,7 @@ export default function Register() {
       footer={
         <>
           Already have an account?{' '}
-          <Link to={`/login${params.toString() ? `?${params}` : ''}`} className="font-semibold text-brand-600 hover:text-brand-700">
+          <Link to={`/login${params.toString() ? `?${params}` : ''}`} className="font-bold text-brand-700 underline decoration-2 underline-offset-4 hover:bg-sun">
             Log in
           </Link>
         </>
@@ -65,7 +65,7 @@ export default function Register() {
     >
       <form onSubmit={handleSubmit} noValidate className="space-y-5">
         {formError && (
-          <p role="alert" className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+          <p role="alert" className="animate-pop-in rounded-xl border-2 border-ink bg-red-300 px-4 py-3 text-sm font-bold text-ink shadow-pop-sm">
             {formError}
           </p>
         )}

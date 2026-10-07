@@ -75,20 +75,24 @@ export default function Messages() {
 
   return (
     <div>
-      <h1 className={`mb-4 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl ${chatId ? 'hidden lg:block' : ''}`}>Messages</h1>
-      <div className="grid h-[calc(100dvh-13rem)] min-h-[28rem] overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm md:h-[calc(100dvh-12rem)] lg:grid-cols-[340px_1fr]">
+      <h1 className={`mb-5 text-3xl font-bold text-ink sm:text-4xl ${chatId ? 'hidden lg:block' : ''}`}>
+        <span className="marker">Messages</span>
+      </h1>
+      <div className="card-pop grid h-[calc(100dvh-13rem)] min-h-[28rem] overflow-hidden md:h-[calc(100dvh-12rem)] lg:grid-cols-[340px_1fr]">
         {/* List: always on desktop, only without an open chat on mobile */}
-        <aside aria-label="Conversations" className={`min-h-0 overflow-y-auto border-slate-200 lg:block lg:border-r ${chatId ? 'hidden' : 'block'}`}>
+        <aside aria-label="Conversations" className={`min-h-0 overflow-y-auto border-ink bg-cream lg:block lg:border-r-2 ${chatId ? 'hidden' : 'block'}`}>
           {list}
         </aside>
         <section aria-label="Conversation" className={`min-h-0 ${chatId ? 'block' : 'hidden lg:block'}`}>
           {chatId ? (
             <ChatWindow key={chatId} chatId={chatId} me={me} />
           ) : (
-            <div className="flex h-full flex-col items-center justify-center p-8 text-center text-slate-500">
-              <ChatIcon className="mb-3 size-10 text-slate-300" />
-              <p className="font-medium text-slate-700">Select a conversation</p>
-              <p className="mt-1 text-sm">Choose a chat from the list to start messaging.</p>
+            <div className="flex h-full flex-col items-center justify-center p-8 text-center">
+              <span className="mb-4 flex size-16 -rotate-6 items-center justify-center rounded-2xl border-2 border-ink bg-sky text-ink shadow-pop">
+                <ChatIcon className="size-8" />
+              </span>
+              <p className="font-display text-xl font-bold text-ink">Select a conversation</p>
+              <p className="mt-1 text-sm font-medium text-slate-600">Choose a chat from the list to start messaging.</p>
             </div>
           )}
         </section>

@@ -72,10 +72,10 @@ export default function ImageUploader({ items, onChange, error, disabled }: Imag
   return (
     <div>
       <div className="mb-1.5 flex items-baseline justify-between">
-        <span className="text-sm font-medium text-slate-700" id={`${inputId}-label`}>
+        <span className="text-sm font-bold text-ink" id={`${inputId}-label`}>
           Photos
         </span>
-        <span className="text-xs text-slate-400 tabular-nums">
+        <span className="rounded-full border-2 border-ink bg-white px-2 text-xs font-bold tabular-nums">
           {items.length}/{MAX_IMAGES}
         </span>
       </div>
@@ -89,15 +89,17 @@ export default function ImageUploader({ items, onChange, error, disabled }: Imag
           }}
           onDragLeave={() => setDragging(false)}
           onDrop={onDrop}
-          className={`flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed px-4 py-8 text-center transition focus-within:ring-2 focus-within:ring-brand-500 ${
-            dragging ? 'border-brand-500 bg-brand-50' : error ? 'border-red-300 bg-red-50/40' : 'border-slate-300 bg-slate-50 hover:border-brand-400 hover:bg-brand-50/50'
+          className={`group flex cursor-pointer flex-col items-center justify-center rounded-2xl border-[3px] border-dashed px-4 py-9 text-center transition-colors focus-within:ring-4 focus-within:ring-sun ${
+            dragging ? 'border-brand-600 bg-brand-100' : error ? 'border-red-600 bg-red-50' : 'border-ink bg-sky-soft hover:bg-sun-soft'
           } ${disabled ? 'pointer-events-none opacity-60' : ''}`}
         >
-          <UploadIcon className="mb-2 size-8 text-brand-600" />
-          <span className="text-sm font-semibold text-slate-800">
-            <span className="text-brand-600">Choose photos</span> or drag them here
+          <span className={`mb-3 flex size-14 items-center justify-center rounded-2xl border-2 border-ink bg-white text-ink shadow-pop-sm transition-transform group-hover:-rotate-6 motion-reduce:transition-none ${dragging ? 'animate-wiggle' : ''}`}>
+            <UploadIcon className="size-7" />
           </span>
-          <span className="mt-1 text-xs text-slate-500">JPG, PNG or WebP · up to 10 MB each · max {MAX_IMAGES}</span>
+          <span className="font-display text-base font-semibold text-ink">
+            <span className="marker">Choose photos</span> or drag them here
+          </span>
+          <span className="mt-1 text-xs font-semibold text-slate-600">JPG, PNG or WebP · up to 10 MB each · max {MAX_IMAGES}</span>
           <input
             ref={inputRef}
             id={inputId}
@@ -117,7 +119,7 @@ export default function ImageUploader({ items, onChange, error, disabled }: Imag
       )}
 
       {(error || problems.length > 0) && (
-        <ul className="mt-2 space-y-1 text-sm text-red-600" role="alert">
+        <ul className="mt-2 space-y-1 text-sm font-semibold text-red-700" role="alert">
           {error && <li>{error}</li>}
           {problems.map((p) => (
             <li key={p}>{p}</li>
@@ -128,20 +130,20 @@ export default function ImageUploader({ items, onChange, error, disabled }: Imag
       {items.length > 0 && (
         <ul className="mt-3 grid grid-cols-3 gap-3 sm:grid-cols-5">
           {items.map((item, i) => (
-            <li key={item.key} className="group relative aspect-square overflow-hidden rounded-lg border border-slate-200 bg-slate-100">
+            <li key={item.key} className={`group relative aspect-square animate-pop-in overflow-hidden rounded-xl border-2 border-ink bg-brand-50 shadow-pop-sm ${i % 2 ? 'rotate-1' : '-rotate-1'}`}>
               <img
                 src={item.kind === 'new' ? item.preview : getPublicUrl(item.path)}
                 alt={`Photo ${i + 1}`}
                 className="size-full object-cover"
               />
               {i === 0 ? (
-                <span className="absolute bottom-1 left-1 rounded bg-brand-600 px-1.5 py-0.5 text-[10px] font-semibold text-white">Cover</span>
+                <span className="absolute bottom-1 left-1 rounded-md border-2 border-ink bg-sun px-1.5 text-xs font-bold text-ink">Cover</span>
               ) : (
                 <button
                   type="button"
                   disabled={disabled}
                   onClick={() => makeCover(item.key)}
-                  className="absolute bottom-1 left-1 rounded bg-white/90 px-1.5 py-0.5 text-[10px] font-semibold text-slate-700 opacity-100 shadow sm:opacity-0 sm:group-hover:opacity-100 sm:focus-visible:opacity-100"
+                  className="absolute bottom-1 left-1 rounded-md border-2 border-ink bg-white px-1.5 text-xs font-bold text-ink opacity-100 sm:opacity-0 sm:group-hover:opacity-100 sm:focus-visible:opacity-100"
                 >
                   Make cover
                 </button>
@@ -151,7 +153,7 @@ export default function ImageUploader({ items, onChange, error, disabled }: Imag
                 disabled={disabled}
                 onClick={() => remove(item.key)}
                 aria-label={`Remove photo ${i + 1}`}
-                className="absolute top-1 right-1 flex size-7 items-center justify-center rounded-full bg-slate-900/70 text-white hover:bg-red-600 focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none"
+                className="absolute top-1 right-1 flex size-8 items-center justify-center rounded-full border-2 border-ink bg-white text-ink hover:bg-red-400 focus-visible:ring-4 focus-visible:ring-sun focus-visible:outline-none"
               >
                 <XIcon className="size-4" />
               </button>

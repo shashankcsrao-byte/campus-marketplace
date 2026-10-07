@@ -6,7 +6,7 @@ export default function Avatar({ name, size = 'md' }: { name?: string | null; si
   return (
     <span
       aria-hidden="true"
-      className={`inline-flex shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-brand-500 to-brand-700 font-semibold text-white ${SIZES[size]}`}
+      className={`inline-flex shrink-0 items-center justify-center rounded-full border-2 border-ink bg-bubblegum font-display font-bold text-ink ${SIZES[size]}`}
     >
       {initials(name)}
     </span>

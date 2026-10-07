@@ -36,8 +36,10 @@ export default function Favourites() {
   return (
     <div>
       <header className="mb-6">
-        <h1 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">Favourites</h1>
-        <p className="mt-1 text-slate-500">Items you've saved, most recent first.</p>
+        <h1 className="text-3xl font-bold text-ink sm:text-4xl">
+          Your <span className="marker">favourites</span>
+        </h1>
+        <p className="mt-1 font-medium text-slate-600">Items you've saved, most recent first.</p>
       </header>
 
       {error ? (
@@ -49,7 +51,7 @@ export default function Favourites() {
           icon={<HeartIcon className="size-7" />}
           title="No favourites yet."
           description={
-            <Link to="/" className="font-semibold text-brand-600 hover:text-brand-700">
+            <Link to="/" className="font-bold text-brand-700 underline decoration-2 underline-offset-4 hover:bg-sun">
               Browse the marketplace →
             </Link>
           }

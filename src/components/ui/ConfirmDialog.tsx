@@ -45,13 +45,16 @@ export default function ConfirmDialog({
       onClick={(e) => {
         if (e.target === ref.current && !loading) onCancel(); // backdrop click
       }}
-      className="m-auto w-[calc(100%-2rem)] max-w-md animate-fade-in rounded-2xl bg-white p-0 shadow-2xl motion-reduce:animate-none"
+      className="m-auto w-[calc(100%-2rem)] max-w-md animate-slide-in rounded-3xl border-2 border-ink bg-white p-0 shadow-pop-lg motion-reduce:animate-none"
     >
       <div className="p-6">
-        <h2 id="confirm-title" className="text-lg font-semibold text-slate-900">
+        <div aria-hidden="true" className={`mb-4 flex size-12 -rotate-6 items-center justify-center rounded-2xl border-2 border-ink text-2xl font-bold shadow-pop-sm ${danger ? 'bg-red-400' : 'bg-sun'}`}>
+          !
+        </div>
+        <h2 id="confirm-title" className="text-xl font-bold text-ink">
           {title}
         </h2>
-        <p className="mt-2 text-sm text-slate-600">{message}</p>
+        <p className="mt-2 text-sm font-medium text-slate-700">{message}</p>
         <div className="mt-6 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
           <Button variant="secondary" onClick={onCancel} disabled={loading} autoFocus>
             Cancel

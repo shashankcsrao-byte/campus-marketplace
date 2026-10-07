@@ -62,12 +62,12 @@ export default function LocationField({ value, onChange, error, disabled }: Loca
 
   return (
     <div>
-      <label htmlFor={id} className="mb-1.5 block text-sm font-medium text-slate-700">
-        Meet-up location <span className="font-normal text-slate-400">(optional)</span>
+      <label htmlFor={id} className="mb-1.5 block text-sm font-bold text-ink">
+        Meet-up location <span className="font-medium text-slate-600">(optional)</span>
       </label>
       <div className="flex flex-col gap-2 sm:flex-row">
         <div className="relative flex-1">
-          <MapPinIcon className="pointer-events-none absolute top-1/2 left-3 size-5 -translate-y-1/2 text-slate-400" />
+          <MapPinIcon className="pointer-events-none absolute top-1/2 left-3 size-5 -translate-y-1/2 text-brand-600" />
           <input
             id={id}
             type="text"
@@ -102,23 +102,23 @@ export default function LocationField({ value, onChange, error, disabled }: Loca
         </Button>
       </div>
 
-      {error && <p className="mt-1.5 text-sm text-red-600">{error}</p>}
-      <p id={`${id}-hint`} className="mt-1.5 text-xs text-slate-500">
+      {error && <p className="mt-1.5 text-sm font-semibold text-red-700">{error}</p>}
+      <p id={`${id}-hint`} className="mt-1.5 text-xs font-medium text-slate-600">
         Use a campus landmark, not your home address. Coordinates are rounded to about 100 m.
       </p>
 
       <div aria-live="polite">
         {hasPin && status === 'idle' && (
-          <p className="mt-2 flex items-center gap-2 text-sm text-emerald-700">
+          <p className="mt-3 flex flex-wrap items-center gap-2 rounded-xl border-2 border-ink bg-mint-soft px-3 py-2 text-sm font-semibold text-ink">
             <CheckIcon className="size-4" /> Map pin set ({value.latitude}, {value.longitude})
-            <button type="button" onClick={clear} className="ml-1 font-medium text-slate-500 underline hover:text-slate-800">
+            <button type="button" onClick={clear} className="ml-1 font-bold underline decoration-2 underline-offset-2 hover:text-red-700">
               Remove
             </button>
           </p>
         )}
         {status === 'found' && match && (
-          <div className="mt-2 rounded-lg border border-emerald-200 bg-emerald-50 p-3 text-sm">
-            <p className="text-emerald-800">
+          <div className="mt-3 animate-pop-in rounded-xl border-2 border-ink bg-mint-soft p-3 text-sm shadow-pop-sm">
+            <p className="text-ink">
               <span className="font-semibold">✓ Matched:</span> {match.label}
             </p>
             <div className="mt-2 flex gap-2">
@@ -132,12 +132,12 @@ export default function LocationField({ value, onChange, error, disabled }: Loca
           </div>
         )}
         {status === 'notfound' && (
-          <p className="mt-2 rounded-lg bg-amber-50 p-3 text-sm text-amber-800">
+          <p className="mt-3 rounded-xl border-2 border-ink bg-sun-soft p-3 text-sm font-semibold text-ink">
             Couldn't find that place. Try adding your campus or city name. You can still post without coordinates.
           </p>
         )}
         {status === 'error' && (
-          <p className="mt-2 rounded-lg bg-amber-50 p-3 text-sm text-amber-800">
+          <p className="mt-3 rounded-xl border-2 border-ink bg-tangerine-soft p-3 text-sm font-semibold text-ink">
             Location service unavailable. Your listing will be saved without a map pin.
           </p>
         )}

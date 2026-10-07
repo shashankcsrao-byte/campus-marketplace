@@ -85,15 +85,15 @@ export default function MyListings() {
     <div>
       <header className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">My listings</h1>
-          <p className="mt-1 text-slate-500">Manage what you're selling.</p>
+          <h1 className="text-3xl font-bold text-ink sm:text-4xl">My listings</h1>
+          <p className="mt-1 font-medium text-slate-600">Manage what you're selling.</p>
         </div>
         <Link to="/create" className={buttonClasses()}>
           <PlusIcon className="size-4" /> New listing
         </Link>
       </header>
 
-      <div role="tablist" aria-label="Filter by status" className="mb-6 inline-flex rounded-xl bg-slate-100 p-1">
+      <div role="tablist" aria-label="Filter by status" className="mb-6 inline-flex gap-1 rounded-2xl border-2 border-ink bg-white p-1 shadow-pop-sm">
         {TABS.map((t) => (
           <button
             key={t.key}
@@ -101,11 +101,12 @@ export default function MyListings() {
             type="button"
             aria-selected={tab === t.key}
             onClick={() => setTab(t.key)}
-            className={`min-h-10 rounded-lg px-4 text-sm font-medium transition focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:outline-none ${
-              tab === t.key ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600 hover:text-slate-900'
+            className={`min-h-10 rounded-xl border-2 px-4 font-display text-sm font-semibold transition-colors focus-visible:ring-4 focus-visible:ring-sun focus-visible:outline-none ${
+              tab === t.key ? 'border-ink bg-sun text-ink' : 'border-transparent text-ink hover:bg-sun-soft'
             }`}
           >
-            {t.label} <span className="ml-1 text-xs text-slate-400 tabular-nums">{counts[t.key]}</span>
+            {t.label}{' '}
+            <span className="ml-1 rounded-full border-2 border-ink bg-white px-1.5 text-xs tabular-nums">{counts[t.key]}</span>
           </button>
         ))}
       </div>
@@ -135,7 +136,7 @@ export default function MyListings() {
                   <Button size="sm" variant="secondary" onClick={() => toggleStatus(l)} loading={busyId === l.id} aria-label={l.status === 'sold' ? `Mark ${l.title} available` : `Mark ${l.title} sold`}>
                     {l.status === 'sold' ? 'Relist' : 'Sold'}
                   </Button>
-                  <Button size="sm" variant="ghost" className="!text-red-600 hover:!bg-red-50" onClick={() => setToDelete(l)} aria-label={`Delete ${l.title}`}>
+                  <Button size="sm" variant="ghost" className="!text-red-700 hover:!border-red-700 hover:!bg-red-50" onClick={() => setToDelete(l)} aria-label={`Delete ${l.title}`}>
                     <TrashIcon className="size-4" /> Delete
                   </Button>
                 </div>

@@ -8,10 +8,10 @@ import { deleteListing, getListing, markAvailable, markSold } from '../services/
 import { getOrCreateChat } from '../services/chatService';
 import { toUserMessage } from '../utils/errorMessages';
 import { formatDate, formatPrice, osmUrl } from '../utils/format';
-import { CATEGORY_EMOJI } from '../utils/constants';
 import ImageGallery from '../components/listings/ImageGallery';
 import FavoriteButton from '../components/listings/FavoriteButton';
 import { StatusBadge } from '../components/listings/SoldRibbon';
+import { CategoryTag } from '../components/listings/CategoryIcon';
 import Button, { buttonClasses } from '../components/ui/Button';
 import ConfirmDialog from '../components/ui/ConfirmDialog';
 import Avatar from '../components/ui/Avatar';
@@ -119,7 +119,7 @@ export default function ListingDetail() {
 
   return (
     <div>
-      <button type="button" onClick={() => (window.history.length > 1 ? navigate(-1) : navigate('/'))} className="mb-4 inline-flex min-h-11 items-center gap-1 rounded-lg pr-3 text-sm font-medium text-slate-600 hover:text-slate-900">
+      <button type="button" onClick={() => (window.history.length > 1 ? navigate(-1) : navigate('/'))} className="mb-5 inline-flex min-h-11 items-center gap-1.5 rounded-full border-2 border-ink bg-white px-4 font-display text-sm font-semibold text-ink shadow-pop-sm transition-transform hover:-translate-x-0.5 active:translate-x-0.5 active:translate-y-0.5 active:shadow-none focus-visible:ring-4 focus-visible:ring-sun focus-visible:outline-none motion-reduce:transform-none">
         <ChevronLeftIcon className="size-4" /> Back
       </button>
 
@@ -127,27 +127,33 @@ export default function ListingDetail() {
         <ImageGallery paths={listing.image_paths} title={listing.title} sold={sold} />
 
         <div className="space-y-6">
-          <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+          <div className="card-pop p-5 sm:p-6">
             <div className="flex flex-wrap items-center gap-2">
               <StatusBadge status={listing.status} />
               <Link
                 to={`/?category=${encodeURIComponent(listing.category)}`}
-                className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-700 hover:bg-slate-200"
+                className="rounded-full transition-transform hover:-rotate-3 focus-visible:ring-4 focus-visible:ring-sun focus-visible:outline-none motion-reduce:transition-none"
               >
-                {CATEGORY_EMOJI[listing.category]} {listing.category}
+                <CategoryTag category={listing.category} />
               </Link>
             </div>
-            <h1 className="mt-3 text-2xl font-bold tracking-tight break-words text-slate-900 sm:text-3xl">{listing.title}</h1>
-            <p className={`mt-2 text-3xl font-extrabold ${sold ? 'text-slate-400 line-through' : 'text-brand-700'}`}>{formatPrice(listing.price)}</p>
-            <p className="mt-2 text-sm text-slate-500">
+            <h1 className="mt-4 text-3xl font-bold break-words text-ink sm:text-4xl">{listing.title}</h1>
+            <p
+              className={`mt-4 inline-block -rotate-2 rounded-xl border-2 border-ink px-4 py-1 font-display text-3xl font-bold tabular-nums shadow-pop ${
+                sold ? 'bg-slate-200 text-slate-600 line-through' : 'bg-sun text-ink'
+              }`}
+            >
+              {formatPrice(listing.price)}
+            </p>
+            <p className="mt-4 text-sm font-semibold text-slate-600">
               Posted on <time dateTime={listing.created_at}>{formatDate(listing.created_at)}</time>
               {listing.updated_at !== listing.created_at && <> · Updated {formatDate(listing.updated_at)}</>}
             </p>
 
             {listing.location_name && (
-              <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-slate-700">
+              <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-2 rounded-xl border-2 border-dashed border-ink bg-mint-soft px-3 py-2 text-sm font-semibold text-ink">
                 <span className="inline-flex items-center gap-1">
-                  <MapPinIcon className="size-4 text-slate-400" /> {listing.location_name}
+                  <MapPinIcon className="size-4 text-brand-600" /> {listing.location_name}
                 </span>
                 {hasPin && (
                   <span className="inline-flex items-center gap-2">
@@ -155,11 +161,11 @@ export default function ListingDetail() {
                       href={osmUrl(listing.latitude!, listing.longitude!)}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 font-medium text-brand-600 hover:text-brand-700 hover:underline"
+                      className="inline-flex items-center gap-1 rounded-full border-2 border-ink bg-white px-2.5 font-bold text-ink hover:bg-sun"
                     >
                       View map <ExternalIcon className="size-3.5" />
                     </a>
-                    <span className="text-xs text-slate-400">© OpenStreetMap contributors</span>
+                    <span className="text-xs font-medium text-slate-600">© OpenStreetMap contributors</span>
                   </span>
                 )}
               </div>
@@ -189,22 +195,28 @@ export default function ListingDetail() {
                 </>
               )}
             </div>
-            {sold && !isOwner && <p className="mt-3 text-sm text-slate-500">This item has been sold.</p>}
+            {sold && !isOwner && (
+              <p className="mt-4 rounded-xl border-2 border-ink bg-red-300 px-3 py-2 text-sm font-bold text-ink">This item has been sold.</p>
+            )}
           </div>
 
-          <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
-            <h2 className="font-semibold text-slate-900">Description</h2>
-            <p className="mt-2 text-sm leading-relaxed break-words whitespace-pre-line text-slate-700">{listing.description}</p>
+          <div className="card-pop p-5 sm:p-6">
+            <h2 className="text-xl font-bold text-ink">
+              <span className="marker">Description</span>
+            </h2>
+            <p className="mt-3 text-base leading-relaxed font-medium break-words whitespace-pre-line text-slate-800">{listing.description}</p>
           </div>
 
-          <div className="flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-            <Avatar name={listing.seller?.name} size="md" />
+          <div className="card-pop flex items-center gap-4 !bg-sky-soft p-5">
+            <span className="-rotate-6">
+              <Avatar name={listing.seller?.name} size="lg" />
+            </span>
             <div className="min-w-0">
-              <p className="text-xs font-medium tracking-wide text-slate-500 uppercase">Seller</p>
-              <p className="truncate font-semibold text-slate-900">
-                {listing.seller?.name ?? 'Student'} {isOwner && <span className="text-sm font-normal text-slate-500">(you)</span>}
+              <p className="inline-block rounded-full border-2 border-ink bg-white px-2 text-xs font-bold tracking-wide text-ink uppercase">Seller</p>
+              <p className="mt-1 truncate font-display text-xl font-bold text-ink">
+                {listing.seller?.name ?? 'Student'} {isOwner && <span className="text-sm font-semibold text-slate-600">(you)</span>}
               </p>
-              {listing.seller?.campus && <p className="truncate text-sm text-slate-500">{listing.seller.campus}</p>}
+              {listing.seller?.campus && <p className="truncate text-sm font-semibold text-slate-700">{listing.seller.campus}</p>}
             </div>
           </div>
         </div>

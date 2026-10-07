@@ -40,7 +40,7 @@ export default function SearchBox({ className = '', onSubmitted }: { className?:
       <label htmlFor={inputId} className="sr-only">
         Search listings
       </label>
-      <SearchIcon className="pointer-events-none absolute top-1/2 left-3 size-5 -translate-y-1/2 text-slate-400" />
+      <SearchIcon className="pointer-events-none absolute top-1/2 left-3.5 size-5 -translate-y-1/2 text-ink" />
       <input
         id={inputId}
         type="search"
@@ -50,14 +50,14 @@ export default function SearchBox({ className = '', onSubmitted }: { className?:
         maxLength={100}
         autoComplete="off"
         enterKeyHint="search"
-        className="h-11 w-full rounded-full border border-slate-200 bg-slate-100 pr-10 pl-10 text-base text-slate-900 transition placeholder:text-slate-500 focus:border-brand-500 focus:bg-white focus:ring-2 focus:ring-brand-100 focus:outline-none sm:text-sm [&::-webkit-search-cancel-button]:hidden"
+        className="h-11 w-full rounded-full border-2 border-ink bg-white pr-11 pl-11 text-base font-semibold text-ink shadow-pop-sm transition-[box-shadow] duration-150 placeholder:font-medium placeholder:text-slate-500 focus:shadow-[4px_4px_0_0_#7c3aed] focus:outline-none sm:text-sm [&::-webkit-search-cancel-button]:hidden"
       />
       {value && (
         <button
           type="button"
           onClick={() => setValue('')}
           aria-label="Clear search"
-          className="absolute top-1/2 right-2 flex size-8 -translate-y-1/2 items-center justify-center rounded-full text-slate-400 hover:bg-slate-200 hover:text-slate-700"
+          className="absolute top-1/2 right-1.5 flex size-8 -translate-y-1/2 items-center justify-center rounded-full border-2 border-transparent text-ink hover:border-ink hover:bg-sun"
         >
           <XIcon className="size-4" />
         </button>

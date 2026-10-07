@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useDebounce } from '../../hooks/useDebounce';
-import { CATEGORIES, CATEGORY_EMOJI, type Category } from '../../utils/constants';
+import { CATEGORIES, type Category } from '../../utils/constants';
+import CategoryIcon, { CATEGORY_TINT } from './CategoryIcon';
 import { priceRangeError } from '../../utils/filters';
 import Input from '../ui/Input';
 import Select from '../ui/Select';
@@ -16,19 +17,28 @@ interface Props {
 
 /** Horizontally scrolling category chips (all screen sizes). */
 export function CategoryChips({ value, onChange }: { value: Category | ''; onChange: (c: Category | '') => void }) {
-  const chip = (active: boolean) =>
-    `inline-flex min-h-10 shrink-0 items-center gap-1.5 rounded-full border px-4 text-sm font-medium whitespace-nowrap transition focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:outline-none ${
-      active ? 'border-brand-600 bg-brand-600 text-white shadow-sm' : 'border-slate-200 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50'
+  const chip = (active: boolean, tint = 'bg-brand-600 text-white') =>
+    `inline-flex min-h-11 shrink-0 items-center gap-2 rounded-full border-2 border-ink px-4 font-display text-sm font-semibold whitespace-nowrap transition-[transform,box-shadow,background-color] duration-150 focus-visible:ring-4 focus-visible:ring-sun focus-visible:outline-none motion-reduce:transform-none ${
+      active ? `${tint} -translate-y-0.5 shadow-pop` : 'bg-white text-ink shadow-pop-sm hover:-translate-y-0.5 hover:bg-sun-soft'
     }`;
   return (
-    <div className="-mx-4 overflow-x-auto px-4 pb-1 scrollbar-none sm:mx-0 sm:px-0" role="group" aria-label="Categories">
-      <div className="flex gap-2">
+    <div className="-mx-4 overflow-x-auto px-4 pt-1 pb-3 scrollbar-none sm:mx-0 sm:px-1" role="group" aria-label="Categories">
+      <div className="flex gap-2.5">
         <button type="button" className={chip(!value)} aria-pressed={!value} onClick={() => onChange('')}>
           All
         </button>
         {CATEGORIES.map((c) => (
-          <button key={c} type="button" className={chip(value === c)} aria-pressed={value === c} onClick={() => onChange(value === c ? '' : c)}>
-            <span aria-hidden="true">{CATEGORY_EMOJI[c]}</span> {c}
+          <button
+            key={c}
+            type="button"
+            className={chip(value === c, `${CATEGORY_TINT[c]} text-ink`)}
+            aria-pressed={value === c}
+            onClick={() => onChange(value === c ? '' : c)}
+          >
+            <span aria-hidden="true" className={`flex size-6 items-center justify-center rounded-full border-2 border-ink ${value === c ? 'bg-white' : CATEGORY_TINT[c]}`}>
+              <CategoryIcon category={c} className="size-3.5" />
+            </span>
+            {c}
           </button>
         ))}
       </div>
@@ -64,12 +74,12 @@ export function FilterPanel({ filters, onChange, onClear }: Props) {
   return (
     <div className="space-y-5">
       <fieldset>
-        <legend className="mb-1.5 text-sm font-medium text-slate-700">Price (₹)</legend>
+        <legend className="mb-1.5 text-sm font-bold text-ink">Price (₹)</legend>
         <div className="grid grid-cols-2 gap-2">
           <Input aria-label="Minimum price" placeholder="Min" inputMode="numeric" value={min} onChange={(e) => setMin(digitsOnly(e.target.value))} error={error ? ' ' : undefined} />
           <Input aria-label="Maximum price" placeholder="Max" inputMode="numeric" value={max} onChange={(e) => setMax(digitsOnly(e.target.value))} error={error ? ' ' : undefined} />
         </div>
-        {error && <p className="mt-1.5 text-sm text-red-600" role="alert">{error}</p>}
+        {error && <p className="mt-1.5 text-sm font-semibold text-red-700" role="alert">{error}</p>}
       </fieldset>
 
       <Select label="Status" value={filters.status} onChange={(e) => onChange({ status: e.target.value as StatusFilter })}>
@@ -107,20 +117,20 @@ export function FilterDrawer({ open, onClose, ...props }: Props & { open: boolea
   if (!open) return null;
   return (
     <div className="fixed inset-0 z-50 lg:hidden" role="dialog" aria-modal="true" aria-labelledby="filters-title">
-      <div className="absolute inset-0 animate-fade-in bg-slate-900/50 motion-reduce:animate-none" onClick={onClose} />
-      <div className="absolute inset-y-0 right-0 flex w-full max-w-sm animate-drawer-in flex-col bg-white shadow-2xl motion-reduce:animate-none">
-        <div className="flex items-center justify-between border-b border-slate-200 px-5 py-4">
-          <h2 id="filters-title" className="text-lg font-semibold">
+      <div className="absolute inset-0 animate-fade-in bg-ink/55 motion-reduce:animate-none" onClick={onClose} />
+      <div className="absolute inset-y-0 right-0 flex w-full max-w-sm animate-drawer-in flex-col border-l-2 border-ink bg-cream motion-reduce:animate-none">
+        <div className="flex items-center justify-between border-b-2 border-ink bg-sun px-5 py-4">
+          <h2 id="filters-title" className="text-xl font-bold text-ink">
             Filters
           </h2>
-          <button type="button" onClick={onClose} aria-label="Close filters" className="flex size-11 items-center justify-center rounded-lg hover:bg-slate-100">
+          <button type="button" onClick={onClose} aria-label="Close filters" className="flex size-11 items-center justify-center rounded-xl border-2 border-ink bg-white shadow-pop-sm active:translate-x-0.5 active:translate-y-0.5 active:shadow-none">
             <XIcon className="size-6" />
           </button>
         </div>
         <div className="flex-1 overflow-y-auto p-5">
           <FilterPanel {...props} />
         </div>
-        <div className="border-t border-slate-200 p-4">
+        <div className="border-t-2 border-ink p-4">
           <Button fullWidth size="lg" onClick={onClose}>
             Show results
           </Button>
