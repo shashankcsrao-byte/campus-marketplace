@@ -1,17 +1,25 @@
 -- 0003: listing-images bucket, own-folder storage policies, 1-5 images per listing
 -- NOTE: delete any listings created before this migration (they have no images).
+-- If the bucket already exists (e.g. created in the dashboard), fix its settings instead of failing.
 insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
 values ('listing-images', 'listing-images', true, 5242880,
-        array['image/jpeg','image/png','image/webp']);
+        array['image/jpeg','image/png','image/webp'])
+on conflict (id) do update
+  set public = excluded.public,
+      file_size_limit = excluded.file_size_limit,
+      allowed_mime_types = excluded.allowed_mime_types;
 
+drop policy if exists "Upload to own folder" on storage.objects;
 create policy "Upload to own folder" on storage.objects for insert to authenticated
   with check (bucket_id = 'listing-images'
               and (storage.foldername(name))[1] = (select auth.uid())::text);
 -- Public bucket = anyone can view by URL. This policy is still required because
 -- deleting a file needs both select and delete permission.
+drop policy if exists "Read own folder" on storage.objects;
 create policy "Read own folder" on storage.objects for select to authenticated
   using (bucket_id = 'listing-images'
          and (storage.foldername(name))[1] = (select auth.uid())::text);
+drop policy if exists "Delete own files" on storage.objects;
 create policy "Delete own files" on storage.objects for delete to authenticated
   using (bucket_id = 'listing-images'
          and (storage.foldername(name))[1] = (select auth.uid())::text);
