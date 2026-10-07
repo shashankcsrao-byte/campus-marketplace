@@ -116,7 +116,40 @@ All tables have RLS on. The browser only ever holds the publishable key, so **th
 **Evidence:** `node --env-file=.env scripts/rls-test.mjs`
 
 ```
-<paste your rls-test output here>
+── Listings ──────────────────────────────────────────
+PASS  B cannot edit A listing
+PASS  B cannot mark A listing sold
+PASS  B cannot delete A listing
+PASS  B cannot create listing as A
+PASS  B cannot reference A's image paths
+PASS  Logged-out user cannot create listings
+PASS  Logged-out user can browse listings
+PASS  Database rejects invalid values (CHECK constraints)
+PASS  A's listing is unchanged
+
+── Profiles ──────────────────────────────────────────
+PASS  B cannot edit A profile
+PASS  Nobody can insert profiles directly
+
+── Storage ───────────────────────────────────────────
+PASS  B cannot upload into A's folder
+PASS  B cannot delete A's files
+
+── Favourites ────────────────────────────────────────
+PASS  B cannot add a favourite as A
+PASS  B cannot read A's favourites
+PASS  B cannot delete A's favourites
+
+── Chat ──────────────────────────────────────────────
+PASS  C cannot read A–B's messages
+PASS  C cannot see A–B's chat
+PASS  C cannot send into A–B's chat
+PASS  B cannot send a message as A
+PASS  A (seller) can read the chat
+PASS  C cannot create a chat with a fake seller_id
+PASS  C cannot create a chat as B
+
+23 passed, 0 failed
 ```
 
 ## Location API
@@ -188,6 +221,10 @@ The `service_role` / secret key is **never** used by the app.
 - Full-text search with `pg_trgm` / `tsvector` at larger scale
 - Profile photos (an `avatars` bucket with the same own-folder policies)
 
+## Demo data
+
+`node --env-file=.env scripts/seed-demo.mjs` creates 50 demo student accounts (`@demo.campusmart.app`), ~75 listings with generated images, favourites and chats, all through the public API so RLS applies. It paces sign-ups to respect Supabase's rate limit (~10 min). The demo password is saved to `.demo-accounts.local` (git-ignored).
+
 ## Scripts
 
 | Command | Purpose |
@@ -197,3 +234,4 @@ The `service_role` / secret key is **never** used by the app.
 | `npm run preview` | Serve the production build locally |
 | `npm run lint` | oxlint |
 | `node --env-file=.env scripts/rls-test.mjs` | Authorization tests |
+| `node --env-file=.env scripts/seed-demo.mjs` | Demo data (50 students, ~75 listings) |

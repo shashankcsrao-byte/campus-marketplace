@@ -19,7 +19,7 @@ Tested in a fresh Incognito window. Mark each row **Pass** / **Fail** and add no
 | 11 | Listings | Logged out browse + details | Works | | |
 | 12 | Listings | Edit listing, change photos | Saved; removed files gone from Storage | | |
 | 13 | Listings | Delete with confirm | Row + Storage files removed → /my-listings | | |
-| 14 | Authorization | `rls-test.mjs` | All PASS | | |
+| 14 | Authorization | `rls-test.mjs` | All PASS | Pass | 23/23 against live Supabase |
 | 15 | Authorization | B opens `/edit/<A's id>` | "You can't edit this listing" | | |
 | 16 | Sold | Mark sold / available | SOLD ribbon, greyscale, struck price; Contact hidden | | |
 | 17 | Search | "KEYBOARD" finds "Mechanical keyboard" | Case-insensitive | | |
@@ -53,5 +53,38 @@ Tested in a fresh Incognito window. Mark each row **Pass** / **Fail** and add no
 ## rls-test.mjs output
 
 ```
-<paste here>
+── Listings ──────────────────────────────────────────
+PASS  B cannot edit A listing
+PASS  B cannot mark A listing sold
+PASS  B cannot delete A listing
+PASS  B cannot create listing as A
+PASS  B cannot reference A's image paths
+PASS  Logged-out user cannot create listings
+PASS  Logged-out user can browse listings
+PASS  Database rejects invalid values (CHECK constraints)
+PASS  A's listing is unchanged
+
+── Profiles ──────────────────────────────────────────
+PASS  B cannot edit A profile
+PASS  Nobody can insert profiles directly
+
+── Storage ───────────────────────────────────────────
+PASS  B cannot upload into A's folder
+PASS  B cannot delete A's files
+
+── Favourites ────────────────────────────────────────
+PASS  B cannot add a favourite as A
+PASS  B cannot read A's favourites
+PASS  B cannot delete A's favourites
+
+── Chat ──────────────────────────────────────────────
+PASS  C cannot read A–B's messages
+PASS  C cannot see A–B's chat
+PASS  C cannot send into A–B's chat
+PASS  B cannot send a message as A
+PASS  A (seller) can read the chat
+PASS  C cannot create a chat with a fake seller_id
+PASS  C cannot create a chat as B
+
+23 passed, 0 failed
 ```
