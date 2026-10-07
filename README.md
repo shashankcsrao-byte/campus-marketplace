@@ -2,7 +2,7 @@
 
 A student-to-student marketplace for buying and selling second-hand items on campus: textbooks, cycles, hostel essentials, electronics and more. Students post listings with photos and a meet-up spot, search and filter in real time, save favourites, and chat with sellers live.
 
-**Live URL:** `https://<your-app>.vercel.app` _(fill in after deploying)_
+**Live URL:** https://campus-marketplace-mauve-eight.vercel.app
 
 ---
 
