@@ -21,7 +21,7 @@ export async function removeFavorite(listingId: string): Promise<void> {
 export async function getFavoriteListings(): Promise<ListingWithSeller[]> {
   const { data, error } = await supabase
     .from('favorites')
-    .select('created_at, listing:listings(*, seller:profiles(name, campus))')
+    .select('created_at, listing:listings(*, seller:profiles!listings_seller_id_fkey(name, campus))')
     .order('created_at', { ascending: false });
   if (error) throw error;
   return (data ?? [])

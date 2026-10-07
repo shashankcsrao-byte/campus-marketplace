@@ -11,7 +11,7 @@ import type {
   ListingWithSeller,
 } from '../types';
 
-const WITH_SELLER = '*, seller:profiles(name, campus)';
+const WITH_SELLER = '*, seller:profiles!listings_seller_id_fkey(name, campus)';
 
 /** Characters that would break PostgREST's .or() syntax or act as wildcards. */
 export const sanitizeSearch = (s: string) => s.replace(/[,()%_\\*"]/g, ' ').replace(/\s+/g, ' ').trim();
