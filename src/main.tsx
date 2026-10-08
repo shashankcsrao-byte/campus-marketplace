@@ -1,6 +1,8 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import './index.css';
+import ErrorBoundary from './components/ErrorBoundary';
+import { reloadForNewVersion } from './utils/chunkReload';
 
 const root = createRoot(document.getElementById('root')!);
 
@@ -19,25 +21,49 @@ if (!import.meta.env.VITE_SUPABASE_URL || !import.meta.env.VITE_SUPABASE_PUBLISH
     </div>,
   );
 } else {
+  // After a redeploy, files from the old version are gone: reload once to get the new one.
+  window.addEventListener('vite:preloadError', (event) => {
+    if (reloadForNewVersion()) event.preventDefault();
+  });
+
   Promise.all([
     import('react-router'),
     import('./App'),
     import('./context/ToastContext'),
     import('./context/AuthContext'),
     import('./context/FavoritesContext'),
-  ]).then(([{ BrowserRouter }, { default: App }, { ToastProvider }, { AuthProvider }, { FavoritesProvider }]) => {
-    root.render(
-      <StrictMode>
-        <ToastProvider>
-          <AuthProvider>
-            <FavoritesProvider>
-              <BrowserRouter>
-                <App />
-              </BrowserRouter>
-            </FavoritesProvider>
-          </AuthProvider>
-        </ToastProvider>
-      </StrictMode>,
-    );
-  });
+    import('./context/UnreadContext'),
+  ])
+    .then(([{ BrowserRouter }, { default: App }, { ToastProvider }, { AuthProvider }, { FavoritesProvider }, { UnreadProvider }]) => {
+      root.render(
+        <StrictMode>
+          <ErrorBoundary>
+            <ToastProvider>
+              <AuthProvider>
+                <FavoritesProvider>
+                  <UnreadProvider>
+                    <BrowserRouter>
+                      <App />
+                    </BrowserRouter>
+                  </UnreadProvider>
+                </FavoritesProvider>
+              </AuthProvider>
+            </ToastProvider>
+          </ErrorBoundary>
+        </StrictMode>,
+      );
+    })
+    .catch((err) => {
+      if (reloadForNewVersion()) return;
+      console.error(err);
+      root.render(
+        <ErrorBoundary>
+          <Crash error={err} />
+        </ErrorBoundary>,
+      );
+    });
+}
+
+function Crash({ error }: { error: unknown }): never {
+  throw error;
 }

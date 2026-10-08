@@ -3,7 +3,7 @@ import { Link } from 'react-router';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
 import { useDocumentTitle } from '../hooks/useDocumentTitle';
-import { deleteListing, getMyListings, markAvailable, markSold } from '../services/listingService';
+import { deleteListing, getListingsBySeller, markAvailable, markSold } from '../services/listingService';
 import { toUserMessage } from '../utils/errorMessages';
 import ListingCard from '../components/listings/ListingCard';
 import ListingGrid, { ListingSkeleton } from '../components/listings/ListingGrid';
@@ -36,7 +36,7 @@ export default function MyListings() {
     setError(null);
     setListings(null);
     try {
-      setListings(await getMyListings(user.id));
+      setListings(await getListingsBySeller(user.id));
     } catch (err) {
       setError(toUserMessage(err));
     }

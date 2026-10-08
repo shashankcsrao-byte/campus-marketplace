@@ -1,4 +1,5 @@
 import { useEffect, useState, type FormEvent } from 'react';
+import { Link } from 'react-router';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
 import { useDocumentTitle } from '../hooks/useDocumentTitle';
@@ -61,6 +62,9 @@ export default function Profile() {
           <p className="mt-2 inline-block rounded-full border-2 border-ink bg-sun px-2.5 text-xs font-bold text-ink">
             Member since {formatDate(profile.created_at)}
           </p>
+          <Link to={`/u/${user.id}`} className="mt-2 ml-2 inline-block text-sm font-bold text-white underline decoration-2 underline-offset-4 hover:text-sun">
+            View public profile
+          </Link>
         </div>
       </div>
 

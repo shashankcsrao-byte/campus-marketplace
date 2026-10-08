@@ -1,5 +1,6 @@
 import { supabase } from '../lib/supabase';
 import { UUID_RE } from '../utils/format';
+import { MESSAGE_PAGE_SIZE } from '../utils/constants';
 import type { ChatSummary, Listing, Message } from '../types';
 
 const CHAT_SELECT =
@@ -46,14 +47,11 @@ export async function getChat(chatId: string): Promise<ChatSummary | null> {
   return data as unknown as ChatSummary | null;
 }
 
-/** The 50 most recent messages, oldest first. */
-export async function getMessages(chatId: string): Promise<Message[]> {
-  const { data, error } = await supabase
-    .from('messages')
-    .select('*')
-    .eq('chat_id', chatId)
-    .order('created_at', { ascending: false })
-    .limit(50);
+/** One page of messages, oldest first: the newest page, or the page before `before`. */
+export async function getMessages(chatId: string, before?: string): Promise<Message[]> {
+  let q = supabase.from('messages').select('*').eq('chat_id', chatId);
+  if (before) q = q.lt('created_at', before);
+  const { data, error } = await q.order('created_at', { ascending: false }).limit(MESSAGE_PAGE_SIZE);
   if (error) throw error;
   return ((data ?? []) as Message[]).reverse();
 }
@@ -66,4 +64,17 @@ export async function sendMessage(chatId: string, body: string): Promise<Message
     .single();
   if (error) throw error;
   return data as Message;
+}
+
+/** Unread message count per chat for the current user. */
+export async function getUnreadCounts(): Promise<Record<string, number>> {
+  const { data, error } = await supabase.rpc('my_unread_counts');
+  if (error) throw error;
+  return Object.fromEntries(((data ?? []) as { chat_id: string; unread: number }[]).map((r) => [r.chat_id, Number(r.unread)]));
+}
+
+/** Marks everything in a chat as read for the current user. */
+export async function markChatRead(chatId: string): Promise<void> {
+  const { error } = await supabase.rpc('mark_chat_read', { p_chat_id: chatId });
+  if (error) throw error;
 }

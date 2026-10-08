@@ -6,6 +6,7 @@ import FavoriteButton from './FavoriteButton';
 import { CategoryTag } from './CategoryIcon';
 import { ClockIcon, MapPinIcon } from '../ui/Icons';
 import { formatPrice, timeAgo } from '../../utils/format';
+import { CONDITION_LABEL } from '../../utils/constants';
 import type { ListingWithSeller } from '../../types';
 
 export default function ListingCard({ listing, footer }: { listing: ListingWithSeller; footer?: ReactNode }) {
@@ -44,6 +45,9 @@ export default function ListingCard({ listing, footer }: { listing: ListingWithS
             </time>
           </div>
           <p className="flex min-w-0 items-center gap-1 text-xs font-semibold text-slate-600">
+            {listing.condition && (
+              <span className="shrink-0 rounded-md border border-ink/40 bg-white px-1.5 text-[11px] font-bold text-ink">{CONDITION_LABEL[listing.condition]}</span>
+            )}
             {listing.location_name ? (
               <>
                 <MapPinIcon className="size-3.5 shrink-0 text-brand-600" />

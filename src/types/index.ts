@@ -1,6 +1,7 @@
 import type { Category } from '../utils/constants';
 
 export type ListingStatus = 'available' | 'sold';
+export type ListingCondition = 'new' | 'like_new' | 'used' | 'for_parts';
 
 export interface Profile {
   id: string;
@@ -19,6 +20,7 @@ export interface Listing {
   category: Category;
   image_paths: string[];
   status: ListingStatus;
+  condition: ListingCondition | null;
   location_name: string | null;
   latitude: number | null;
   longitude: number | null;
@@ -36,6 +38,7 @@ export interface ListingInput {
   description: string;
   price: number;
   category: Category;
+  condition: ListingCondition;
   location_name: string | null;
   latitude: number | null;
   longitude: number | null;
@@ -47,6 +50,7 @@ export type StatusFilter = 'available' | 'sold' | 'all';
 export interface ListingFilters {
   q: string;
   category: Category | '';
+  condition: ListingCondition | '';
   min: string;
   max: string;
   status: StatusFilter;
@@ -80,3 +84,5 @@ export interface ChatSummary {
   buyer: { name: string } | null;
   seller: { name: string } | null;
 }
+
+export type ReportReason = 'scam' | 'prohibited' | 'wrong_info' | 'offensive' | 'already_sold' | 'other';

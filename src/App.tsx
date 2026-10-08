@@ -15,6 +15,7 @@ const MyListings = lazy(() => import('./pages/MyListings'));
 const Favourites = lazy(() => import('./pages/Favourites'));
 const Messages = lazy(() => import('./pages/Messages'));
 const Profile = lazy(() => import('./pages/Profile'));
+const SellerProfile = lazy(() => import('./pages/SellerProfile'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 
 export default function App() {
@@ -23,6 +24,7 @@ export default function App() {
       <Route element={<MainLayout />}>
         <Route index element={<Home />} />
         <Route path="listing/:id" element={<ListingDetail />} />
+        <Route path="u/:id" element={<SellerProfile />} />
 
         <Route element={<GuestRoute />}>
           <Route path="login" element={<Login />} />

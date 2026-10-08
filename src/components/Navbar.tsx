@@ -3,12 +3,23 @@ import { Link, NavLink, useLocation, useNavigate } from 'react-router';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
 import { useFavorites } from '../context/FavoritesContext';
+import { useUnread } from '../context/UnreadContext';
 import SearchBox from './SearchBox';
 import Avatar from './ui/Avatar';
 import { buttonClasses } from './ui/Button';
 import { BagIcon, ChatIcon, HeartIcon, ListIcon, LogoutIcon, MenuIcon, PlusIcon, UserIcon, XIcon } from './ui/Icons';
 import { APP_NAME } from '../utils/constants';
 import { toUserMessage } from '../utils/errorMessages';
+
+/** Red count bubble for unread messages. */
+function UnreadBadge({ count, className = '' }: { count: number; className?: string }) {
+  if (!count) return null;
+  return (
+    <span className={`inline-flex min-w-5 items-center justify-center rounded-full border-2 border-ink bg-red-500 px-1 text-[11px] leading-4 font-bold text-white tabular-nums ${className}`}>
+      {count > 99 ? '99+' : count}
+    </span>
+  );
+}
 
 const navLinkClass = ({ isActive }: { isActive: boolean }) =>
   `inline-flex min-h-11 items-center gap-2 rounded-xl border-2 px-3 font-display text-sm font-semibold transition-colors focus-visible:ring-4 focus-visible:ring-sun focus-visible:outline-none ${
@@ -18,6 +29,8 @@ const navLinkClass = ({ isActive }: { isActive: boolean }) =>
 export default function Navbar() {
   const { user, profile, signOut } = useAuth();
   const { ids: favoriteIds } = useFavorites();
+  const { total: unread } = useUnread();
+  const unreadLabel = unread ? `, ${unread} unread` : '';
   const { showToast } = useToast();
   const navigate = useNavigate();
   const location = useLocation();
@@ -76,9 +89,9 @@ export default function Navbar() {
         <nav aria-label="Main" className="ml-auto hidden items-center gap-1 md:flex">
           {user ? (
             <>
-              <NavLink to="/messages" className={navLinkClass}>
+              <NavLink to="/messages" className={navLinkClass} aria-label={`Messages${unreadLabel}`}>
                 <ChatIcon /> <span className="hidden lg:inline">Messages</span>
-                <span className="sr-only lg:hidden">Messages</span>
+                <UnreadBadge count={unread} />
               </NavLink>
               <NavLink to="/favourites" className={navLinkClass}>
                 <HeartIcon /> <span className="hidden lg:inline">Favourites</span>
@@ -138,10 +151,11 @@ export default function Navbar() {
           onClick={() => setMobileOpen((o) => !o)}
           aria-expanded={mobileOpen}
           aria-controls="mobile-menu"
-          aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
-          className="ml-auto flex size-11 items-center justify-center rounded-xl border-2 border-ink bg-white text-ink shadow-pop-sm active:translate-x-0.5 active:translate-y-0.5 active:shadow-none focus-visible:ring-4 focus-visible:ring-sun focus-visible:outline-none md:hidden"
+          aria-label={mobileOpen ? 'Close menu' : `Open menu${unreadLabel}`}
+          className="relative ml-auto flex size-11 items-center justify-center rounded-xl border-2 border-ink bg-white text-ink shadow-pop-sm active:translate-x-0.5 active:translate-y-0.5 active:shadow-none focus-visible:ring-4 focus-visible:ring-sun focus-visible:outline-none md:hidden"
         >
           {mobileOpen ? <XIcon className="size-6" /> : <MenuIcon className="size-6" />}
+          {!mobileOpen && <UnreadBadge count={unread} className="absolute -top-2 -right-2" />}
         </button>
       </div>
 
@@ -164,7 +178,9 @@ export default function Navbar() {
               <Link to="/create" className={buttonClasses('primary', 'md', 'mb-2')}>
                 <PlusIcon className="size-4" /> Sell an item
               </Link>
-              <NavLink to="/messages" className={navLinkClass}><ChatIcon /> Messages</NavLink>
+              <NavLink to="/messages" className={navLinkClass} aria-label={`Messages${unreadLabel}`}>
+                <ChatIcon /> Messages <UnreadBadge count={unread} />
+              </NavLink>
               <NavLink to="/favourites" className={navLinkClass}><HeartIcon /> Favourites</NavLink>
               <NavLink to="/my-listings" className={navLinkClass}><ListIcon /> My Listings</NavLink>
               <NavLink to="/profile" className={navLinkClass}><UserIcon /> Profile</NavLink>

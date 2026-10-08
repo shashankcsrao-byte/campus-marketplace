@@ -6,10 +6,10 @@ import Button from '../ui/Button';
 import { WarningIcon } from '../ui/Icons';
 import ImageUploader from './ImageUploader';
 import LocationField from './LocationField';
-import { CATEGORIES, LIMITS, type Category } from '../../utils/constants';
+import { CATEGORIES, CONDITIONS, LIMITS, type Category } from '../../utils/constants';
 import { validateListing, type FieldErrors, type ListingFormInput } from '../../utils/validation';
 import { toUserMessage } from '../../utils/errorMessages';
-import type { ImageItem, Listing, ListingInput, LocationValue } from '../../types';
+import type { ImageItem, Listing, ListingCondition, ListingInput, LocationValue } from '../../types';
 
 interface ListingFormProps {
   initial?: Listing;
@@ -24,6 +24,7 @@ export default function ListingForm({ initial, submitLabel, progressLabel, onSub
   const [description, setDescription] = useState(initial?.description ?? '');
   const [price, setPrice] = useState(initial ? String(initial.price) : '');
   const [category, setCategory] = useState<string>(initial?.category ?? '');
+  const [condition, setCondition] = useState<string>(initial?.condition ?? '');
   const [location, setLocation] = useState<LocationValue>({
     location_name: initial?.location_name ?? '',
     latitude: initial?.latitude ?? null,
@@ -44,6 +45,7 @@ export default function ListingForm({ initial, submitLabel, progressLabel, onSub
       description,
       price,
       category,
+      condition,
       location_name: location.location_name,
       imageCount: images.length,
     });
@@ -63,6 +65,7 @@ export default function ListingForm({ initial, submitLabel, progressLabel, onSub
           description: description.trim(),
           price: Number(price),
           category: category as Category,
+          condition: condition as ListingCondition,
           location_name: locationName || null,
           latitude: locationName ? location.latitude : null,
           longitude: locationName ? location.longitude : null,
@@ -175,6 +178,42 @@ export default function ListingForm({ initial, submitLabel, progressLabel, onSub
             </Select>
           </div>
         </div>
+        <fieldset data-field="condition" aria-describedby={errors.condition ? 'condition-error' : undefined}>
+          <legend className="mb-1.5 text-sm font-bold text-ink">Condition</legend>
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+            {CONDITIONS.map((c) => {
+              const checked = condition === c.value;
+              return (
+                <label
+                  key={c.value}
+                  className={`flex min-h-16 cursor-pointer flex-col justify-center rounded-xl border-2 px-3 py-2 transition-[transform,box-shadow,background-color] focus-within:ring-4 focus-within:ring-sun motion-reduce:transition-none ${
+                    checked ? 'border-ink bg-sun shadow-pop-sm' : errors.condition ? 'border-red-600 bg-red-50' : 'border-ink bg-white hover:bg-sun-soft'
+                  } ${submitting ? 'pointer-events-none opacity-60' : ''}`}
+                >
+                  <input
+                    type="radio"
+                    name="condition"
+                    value={c.value}
+                    checked={checked}
+                    disabled={submitting}
+                    onChange={() => {
+                      setCondition(c.value);
+                      clearError('condition');
+                    }}
+                    className="sr-only"
+                  />
+                  <span className="font-display text-sm font-bold text-ink">{c.label}</span>
+                  <span className="text-xs font-medium text-slate-600">{c.hint}</span>
+                </label>
+              );
+            })}
+          </div>
+          {errors.condition && (
+            <p id="condition-error" className="mt-1.5 text-sm font-semibold text-red-700">
+              {errors.condition}
+            </p>
+          )}
+        </fieldset>
       </section>
 
       <section className="card-pop space-y-5 p-5 sm:p-6" data-field="location_name">

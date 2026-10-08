@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /create
+Disallow: /edit/
+Disallow: /messages
+Disallow: /favourites
+Disallow: /my-listings
+Disallow: /profile

@@ -28,7 +28,30 @@ export const CATEGORY_EMOJI: Record<Category, string> = {
   Other: '📦',
 };
 
+export const CONDITIONS = [
+  { value: 'new', label: 'Brand new', hint: 'Unused, sealed or with tags' },
+  { value: 'like_new', label: 'Like new', hint: 'Used a few times, no marks' },
+  { value: 'used', label: 'Used', hint: 'Normal wear, works fine' },
+  { value: 'for_parts', label: 'For parts', hint: 'Damaged or not working' },
+] as const;
+
+export type ConditionValue = (typeof CONDITIONS)[number]['value'];
+
+export const CONDITION_LABEL: Record<ConditionValue, string> = Object.fromEntries(
+  CONDITIONS.map((c) => [c.value, c.label]),
+) as Record<ConditionValue, string>;
+
+export const REPORT_REASONS = [
+  { value: 'scam', label: 'Looks like a scam' },
+  { value: 'prohibited', label: 'Prohibited or unsafe item' },
+  { value: 'wrong_info', label: 'Wrong price, photos or category' },
+  { value: 'offensive', label: 'Offensive content' },
+  { value: 'already_sold', label: 'Already sold but still listed' },
+  { value: 'other', label: 'Something else' },
+] as const;
+
 export const PAGE_SIZE = 20;
+export const MESSAGE_PAGE_SIZE = 50;
 
 export const LISTING_IMAGES_BUCKET = 'listing-images';
 export const MAX_IMAGES = 5;
@@ -47,4 +70,5 @@ export const LIMITS = {
   campusMax: 80,
   passwordMin: 8,
   messageMax: 2000,
+  reportDetailsMax: 500,
 } as const;

@@ -1,4 +1,4 @@
-import { CATEGORIES, LIMITS, MAX_IMAGES } from './constants';
+import { CATEGORIES, CONDITIONS, LIMITS, MAX_IMAGES } from './constants';
 
 export type FieldErrors<K extends string> = Partial<Record<K, string>>;
 
@@ -7,6 +7,7 @@ export interface ListingFormInput {
   description: string;
   price: string;
   category: string;
+  condition: string;
   location_name: string;
   imageCount: number;
 }
@@ -33,6 +34,8 @@ export function validateListing(input: ListingFormInput): FieldErrors<keyof List
   else if (price > LIMITS.priceMax) errors.price = 'Price can be at most ₹1,00,00,000.';
 
   if (!(CATEGORIES as readonly string[]).includes(input.category)) errors.category = 'Choose a category.';
+
+  if (!CONDITIONS.some((c) => c.value === input.condition)) errors.condition = 'Choose the condition.';
 
   if (input.location_name.trim().length > LIMITS.locationMax)
     errors.location_name = `Location must be at most ${LIMITS.locationMax} characters.`;

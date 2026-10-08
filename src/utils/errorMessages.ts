@@ -7,7 +7,7 @@ const BY_CODE: Record<string, string> = {
   invalid_credentials: 'Incorrect email or password.',
   user_already_exists: 'An account with this email already exists.',
   email_exists: 'An account with this email already exists.',
-  weak_password: 'Password must be at least 6 characters.',
+  weak_password: 'Password must be at least 8 characters.',
   over_email_send_rate_limit: 'Too many attempts. Try again later.',
   over_request_rate_limit: 'Too many attempts. Try again later.',
   email_not_confirmed: 'Please confirm your email before signing in.',
@@ -18,6 +18,11 @@ const BY_CODE: Record<string, string> = {
   '23503': 'This item no longer exists.',
   '22P02': 'Invalid request.',
   PGRST116: 'Not found.',
+  // Rate limits (raised by database triggers, see 0006/0007)
+  RATE_LIMIT_LISTINGS: "You've posted 10 listings in the last 24 hours. Try again tomorrow.",
+  RATE_LIMIT_MESSAGES: "You're sending messages too fast. Wait a minute and try again.",
+  RATE_LIMIT_CHATS: "You've started a lot of chats in the last hour. Try again a bit later.",
+  RATE_LIMIT_REPORTS: "You've sent a lot of reports today. Try again tomorrow.",
   // App-level codes
   NOT_ALLOWED: PERMISSION,
   NOT_FOUND: "This listing doesn't exist or was removed.",

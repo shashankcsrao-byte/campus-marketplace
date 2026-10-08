@@ -1,6 +1,7 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { supabase } from '../lib/supabase';
 import { getMessages, sendMessage } from '../services/chatService';
+import { MESSAGE_PAGE_SIZE } from '../utils/constants';
 import { toUserMessage } from '../utils/errorMessages';
 import type { Message } from '../types';
 
@@ -10,7 +11,13 @@ export function useChat(chatId: string | undefined) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [hasOlder, setHasOlder] = useState(false);
+  const [loadingOlder, setLoadingOlder] = useState(false);
   const [reloadKey, setReloadKey] = useState(0);
+  const messagesRef = useRef<Message[]>([]);
+  useEffect(() => {
+    messagesRef.current = messages;
+  }, [messages]);
 
   useEffect(() => {
     if (!chatId) return;
@@ -18,10 +25,12 @@ export function useChat(chatId: string | undefined) {
     setLoading(true);
     setError(null);
     setMessages([]);
+    setHasOlder(false);
 
     getMessages(chatId)
       .then((initial) => {
         if (!active) return;
+        setHasOlder(initial.length === MESSAGE_PAGE_SIZE);
         // Merge in case a realtime message arrived before the initial load finished.
         setMessages((prev) => prev.reduce(addUnique, initial));
       })
@@ -43,6 +52,23 @@ export function useChat(chatId: string | undefined) {
     };
   }, [chatId, reloadKey]);
 
+  /** Prepends the page of messages before the oldest one shown. */
+  const loadOlder = useCallback(async () => {
+    const oldest = messagesRef.current[0];
+    if (!chatId || !oldest || loadingOlder) return;
+    setLoadingOlder(true);
+    try {
+      const page = await getMessages(chatId, oldest.created_at);
+      setHasOlder(page.length === MESSAGE_PAGE_SIZE);
+      setMessages((prev) => {
+        const known = new Set(prev.map((m) => m.id));
+        return [...page.filter((m) => !known.has(m.id)), ...prev];
+      });
+    } finally {
+      setLoadingOlder(false);
+    }
+  }, [chatId, loadingOlder]);
+
   const send = useCallback(
     async (body: string) => {
       if (!chatId) return;
@@ -53,5 +79,5 @@ export function useChat(chatId: string | undefined) {
   );
 
   const retry = useCallback(() => setReloadKey((k) => k + 1), []);
-  return { messages, loading, error, send, retry };
+  return { messages, loading, error, send, retry, hasOlder, loadingOlder, loadOlder };
 }

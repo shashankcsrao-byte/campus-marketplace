@@ -10,6 +10,9 @@ import { toUserMessage } from '../utils/errorMessages';
 import { formatDate, formatPrice, osmUrl } from '../utils/format';
 import ImageGallery from '../components/listings/ImageGallery';
 import FavoriteButton from '../components/listings/FavoriteButton';
+import ShareButtons from '../components/listings/ShareButtons';
+import ReportButton from '../components/listings/ReportButton';
+import { CONDITION_LABEL } from '../utils/constants';
 import { StatusBadge } from '../components/listings/SoldRibbon';
 import { CategoryTag } from '../components/listings/CategoryIcon';
 import Button, { buttonClasses } from '../components/ui/Button';
@@ -17,7 +20,7 @@ import ConfirmDialog from '../components/ui/ConfirmDialog';
 import Avatar from '../components/ui/Avatar';
 import { FullPageSpinner } from '../components/ui/Spinner';
 import { EmptyState, ErrorState } from '../components/ui/States';
-import { ChatIcon, CheckIcon, ChevronLeftIcon, EditIcon, ExternalIcon, MapPinIcon, TrashIcon, WarningIcon } from '../components/ui/Icons';
+import { ArrowRightIcon, ChatIcon, CheckIcon, ChevronLeftIcon, EditIcon, ExternalIcon, MapPinIcon, TrashIcon, WarningIcon } from '../components/ui/Icons';
 import type { ListingWithSeller } from '../types';
 
 export default function ListingDetail() {
@@ -136,6 +139,11 @@ export default function ListingDetail() {
               >
                 <CategoryTag category={listing.category} />
               </Link>
+              {listing.condition && (
+                <span className="inline-flex items-center rounded-full border-2 border-ink bg-white px-2.5 py-0.5 text-xs font-bold text-ink">
+                  {CONDITION_LABEL[listing.condition]}
+                </span>
+              )}
             </div>
             <h1 className="mt-4 text-3xl font-bold break-words text-ink sm:text-4xl">{listing.title}</h1>
             <p
@@ -198,6 +206,11 @@ export default function ListingDetail() {
             {sold && !isOwner && (
               <p className="mt-4 rounded-xl border-2 border-ink bg-red-300 px-3 py-2 text-sm font-bold text-ink">This item has been sold.</p>
             )}
+
+            <div className="mt-5 flex flex-wrap items-center justify-between gap-3 border-t-2 border-dashed border-slate-200 pt-4">
+              <ShareButtons title={listing.title} price={listing.price} />
+              <ReportButton listingId={listing.id} sellerId={listing.seller_id} />
+            </div>
           </div>
 
           <div className="card-pop p-5 sm:p-6">
@@ -207,18 +220,23 @@ export default function ListingDetail() {
             <p className="mt-3 text-base leading-relaxed font-medium break-words whitespace-pre-line text-slate-800">{listing.description}</p>
           </div>
 
-          <div className="card-pop flex items-center gap-4 !bg-sky-soft p-5">
+          <Link
+            to={`/u/${listing.seller_id}`}
+            className="card-pop press group flex items-center gap-4 !bg-sky-soft p-5 focus-visible:ring-4 focus-visible:ring-sun focus-visible:outline-none"
+          >
             <span className="-rotate-6">
               <Avatar name={listing.seller?.name} size="lg" />
             </span>
-            <div className="min-w-0">
+            <div className="min-w-0 flex-1">
               <p className="inline-block rounded-full border-2 border-ink bg-white px-2 text-xs font-bold tracking-wide text-ink uppercase">Seller</p>
               <p className="mt-1 truncate font-display text-xl font-bold text-ink">
                 {listing.seller?.name ?? 'Student'} {isOwner && <span className="text-sm font-semibold text-slate-600">(you)</span>}
               </p>
               {listing.seller?.campus && <p className="truncate text-sm font-semibold text-slate-700">{listing.seller.campus}</p>}
+              <p className="mt-1 text-sm font-bold text-brand-700 underline decoration-2 underline-offset-4">See profile and other listings</p>
             </div>
-          </div>
+            <ArrowRightIcon className="size-5 shrink-0 text-ink transition-transform group-hover:translate-x-1 motion-reduce:transition-none" />
+          </Link>
         </div>
       </div>
 

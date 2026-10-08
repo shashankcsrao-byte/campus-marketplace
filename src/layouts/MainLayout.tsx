@@ -1,6 +1,7 @@
 import { Suspense, useEffect } from 'react';
 import { Link, Outlet, useLocation } from 'react-router';
 import Navbar from '../components/Navbar';
+import ErrorBoundary from '../components/ErrorBoundary';
 import { FullPageSpinner } from '../components/ui/Spinner';
 import { BagIcon } from '../components/ui/Icons';
 import { APP_NAME } from '../utils/constants';
@@ -21,9 +22,12 @@ export default function MainLayout() {
       </a>
       <Navbar />
       <main id="main" className="mx-auto w-full max-w-7xl flex-1 px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
-        <Suspense fallback={<FullPageSpinner />}>
-          <Outlet />
-        </Suspense>
+        {/* Keyed by path so moving to another page clears an error. */}
+        <ErrorBoundary key={pathname}>
+          <Suspense fallback={<FullPageSpinner />}>
+            <Outlet />
+          </Suspense>
+        </ErrorBoundary>
       </main>
       <footer className="mt-10 border-t-2 border-ink bg-ink text-white">
         <div className="mx-auto flex max-w-7xl flex-col gap-6 px-4 py-8 sm:px-6 md:flex-row md:items-center md:justify-between lg:px-8">

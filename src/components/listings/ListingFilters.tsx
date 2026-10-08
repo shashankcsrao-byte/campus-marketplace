@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react';
 import { useDebounce } from '../../hooks/useDebounce';
-import { CATEGORIES, type Category } from '../../utils/constants';
+import { CATEGORIES, CONDITIONS, type Category } from '../../utils/constants';
 import CategoryIcon, { CATEGORY_TINT } from './CategoryIcon';
 import { priceRangeError } from '../../utils/filters';
 import Input from '../ui/Input';
 import Select from '../ui/Select';
 import Button from '../ui/Button';
 import { XIcon } from '../ui/Icons';
-import type { ListingFilters as Filters, SortOption, StatusFilter } from '../../types';
+import type { ListingCondition, ListingFilters as Filters, SortOption, StatusFilter } from '../../types';
 
 interface Props {
   filters: Filters;
@@ -81,6 +81,15 @@ export function FilterPanel({ filters, onChange, onClear }: Props) {
         </div>
         {error && <p className="mt-1.5 text-sm font-semibold text-red-700" role="alert">{error}</p>}
       </fieldset>
+
+      <Select label="Condition" value={filters.condition} onChange={(e) => onChange({ condition: e.target.value as ListingCondition | '' })}>
+        <option value="">Any condition</option>
+        {CONDITIONS.map((c) => (
+          <option key={c.value} value={c.value}>
+            {c.label}
+          </option>
+        ))}
+      </Select>
 
       <Select label="Status" value={filters.status} onChange={(e) => onChange({ status: e.target.value as StatusFilter })}>
         <option value="available">Available</option>

@@ -1,6 +1,7 @@
 import { supabase } from '../lib/supabase';
 import { appError } from '../utils/errorMessages';
 import { UUID_RE } from '../utils/format';
+import { sanitizeSearch } from '../utils/filters';
 import { removeImages, uploadListingImages } from './storageService';
 import type {
   ImageItem,
@@ -13,9 +14,6 @@ import type {
 
 const WITH_SELLER = '*, seller:profiles!listings_seller_id_fkey(name, campus)';
 
-/** Characters that would break PostgREST's .or() syntax or act as wildcards. */
-export const sanitizeSearch = (s: string) => s.replace(/[,()%_\\*"]/g, ' ').replace(/\s+/g, ' ').trim();
-
 export async function getListings(
   filters: ListingFilters,
   from: number,
@@ -26,6 +24,7 @@ export async function getListings(
   const s = sanitizeSearch(filters.q);
   if (s) q = q.or(`title.ilike.%${s}%,description.ilike.%${s}%`);
   if (filters.category) q = q.eq('category', filters.category);
+  if (filters.condition) q = q.eq('condition', filters.condition);
   if (filters.min) q = q.gte('price', Number(filters.min));
   if (filters.max) q = q.lte('price', Number(filters.max));
   if (filters.status !== 'all') q = q.eq('status', filters.status);
@@ -50,7 +49,8 @@ export async function getListing(id: string): Promise<ListingWithSeller | null> 
   return data as ListingWithSeller | null;
 }
 
-export async function getMyListings(userId: string): Promise<ListingWithSeller[]> {
+/** Every listing by one seller, newest first (My listings and the public seller page). */
+export async function getListingsBySeller(userId: string): Promise<ListingWithSeller[]> {
   const { data, error } = await supabase
     .from('listings')
     .select(WITH_SELLER)
@@ -138,11 +138,11 @@ export async function deleteListing(listing: Pick<Listing, 'id' | 'image_paths'>
   removeImages(listing.image_paths).catch((err) => console.warn('Could not remove images', err));
 }
 
-/** Available listings per category (for the landing page's shelves). */
+/** Available listings per category (for the landing page's shelves), counted in the database. */
 export async function getCategoryCounts(): Promise<Partial<Record<Listing['category'], number>>> {
-  const { data, error } = await supabase.from('listings').select('category').eq('status', 'available');
+  const { data, error } = await supabase.rpc('category_counts');
   if (error) throw error;
   const counts: Partial<Record<Listing['category'], number>> = {};
-  for (const row of (data ?? []) as Pick<Listing, 'category'>[]) counts[row.category] = (counts[row.category] ?? 0) + 1;
+  for (const row of (data ?? []) as { category: Listing['category']; total: number }[]) counts[row.category] = Number(row.total);
   return counts;
 }
