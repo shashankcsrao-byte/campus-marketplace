@@ -26,3 +26,35 @@ export function reloadForNewVersion(): boolean {
   window.location.reload();
   return true;
 }
+
+/** The file a failed dynamic import was loading, when the browser names it (Chrome, Firefox). */
+function failedModuleUrl(error: unknown): string | null {
+  const msg = error instanceof Error ? error.message : String(error);
+  const match = msg.match(/(https?:\/\/\S+?\.js)/);
+  return match ? match[1] : null;
+}
+
+/**
+ * Wraps a lazy page import so a brief network drop doesn't break navigation:
+ * a failed download is retried twice (after 0.8 s, then 1.6 s) before giving up.
+ * Browsers remember a failed module URL, so each retry asks for a fresh copy (?retry=N).
+ */
+export function retryImport<T>(load: () => Promise<T>, retries = 2, delayMs = 800): () => Promise<T> {
+  return async () => {
+    let lastError: unknown;
+    for (let attempt = 0; attempt <= retries; attempt++) {
+      try {
+        if (attempt === 0) return await load();
+        const url = failedModuleUrl(lastError);
+        return url
+          ? ((await import(/* @vite-ignore */ `${url.split('?')[0]}?retry=${attempt}`)) as T)
+          : await load();
+      } catch (err) {
+        if (!isChunkLoadError(err)) throw err;
+        lastError = err;
+        if (attempt < retries) await new Promise((resolve) => setTimeout(resolve, delayMs * (attempt + 1)));
+      }
+    }
+    throw lastError;
+  };
+}

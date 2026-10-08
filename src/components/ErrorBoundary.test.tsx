@@ -21,7 +21,7 @@ describe('ErrorBoundary', () => {
     expect(screen.getByRole('link', { name: 'Go to marketplace' })).toHaveAttribute('href', '/');
   });
 
-  it('explains a missing file from an old deployment', () => {
+  it('explains a page file that failed to download', () => {
     vi.spyOn(console, 'error').mockImplementation(() => {});
     sessionStorage.setItem('cm:chunk-reload-at', String(Date.now())); // already reloaded: don't loop
     render(
@@ -29,6 +29,6 @@ describe('ErrorBoundary', () => {
         <Boom error={new TypeError('Failed to fetch dynamically imported module: /assets/Messages-x.js')} />
       </ErrorBoundary>,
     );
-    expect(screen.getByRole('heading', { name: 'A new version is available' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: "This page didn't load" })).toBeInTheDocument();
   });
 });

@@ -18,7 +18,7 @@ export default class ErrorBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, info: ErrorInfo) {
-    // A page file from an older deployment: reload once to get the current version.
+    // A page file that failed to download (network drop, or an older deployment): reload once.
     if (isChunkLoadError(error) && reloadForNewVersion()) return;
     console.error('Unhandled UI error', error, info.componentStack);
   }
@@ -31,9 +31,11 @@ export default class ErrorBoundary extends Component<Props, State> {
         <span className="mx-auto mb-5 flex size-14 rotate-6 items-center justify-center rounded-2xl border-2 border-ink bg-red-300 text-ink shadow-pop">
           <WarningIcon className="size-7" />
         </span>
-        <h1 className="font-display text-2xl font-bold text-ink">{outdated ? 'A new version is available' : 'Something went wrong'}</h1>
+        <h1 className="font-display text-2xl font-bold text-ink">{outdated ? "This page didn't load" : 'Something went wrong'}</h1>
         <p className="mt-2 text-sm font-medium text-slate-600">
-          {outdated ? 'Reload the page to get the latest version of the marketplace.' : 'This page hit an unexpected error. Reloading usually fixes it.'}
+          {outdated
+            ? 'Your connection may have dropped, or the site was just updated. Check your internet and reload.'
+            : 'This page hit an unexpected error. Reloading usually fixes it.'}
         </p>
         <div className="mt-6 flex flex-col justify-center gap-2 sm:flex-row">
           <button

@@ -3,6 +3,7 @@ import { Link, useSearchParams } from 'react-router';
 import { useListings } from '../hooks/useListings';
 import { useDocumentTitle } from '../hooks/useDocumentTitle';
 import { useAuth } from '../context/AuthContext';
+import { retryImport } from '../utils/chunkReload';
 import ListingCard from '../components/listings/ListingCard';
 import ListingGrid, { ListingSkeleton } from '../components/listings/ListingGrid';
 import { CategoryChips, FilterDrawer, FilterPanel } from '../components/listings/ListingFilters';
@@ -13,7 +14,7 @@ import { applyFilterPatch, hasActiveFilters, parseFilters } from '../utils/filte
 import type { ListingFilters } from '../types';
 
 // The motion landing is only for signed-out visitors, so it loads on demand.
-const Landing = lazy(() => import('../landing/Landing'));
+const Landing = lazy(retryImport(() => import('../landing/Landing')));
 
 function WelcomeStrip({ name }: { name?: string }) {
   return (

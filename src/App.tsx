@@ -1,22 +1,23 @@
 import { lazy } from 'react';
 import { Route, Routes } from 'react-router';
 import MainLayout from './layouts/MainLayout';
+import { retryImport } from './utils/chunkReload';
 import ProtectedRoute from './routes/ProtectedRoute';
 import GuestRoute from './routes/GuestRoute';
 import Home from './pages/Home';
 
 // Each page's code loads only when it's opened.
-const Login = lazy(() => import('./pages/Login'));
-const Register = lazy(() => import('./pages/Register'));
-const ListingDetail = lazy(() => import('./pages/ListingDetail'));
-const CreateListing = lazy(() => import('./pages/CreateListing'));
-const EditListing = lazy(() => import('./pages/EditListing'));
-const MyListings = lazy(() => import('./pages/MyListings'));
-const Favourites = lazy(() => import('./pages/Favourites'));
-const Messages = lazy(() => import('./pages/Messages'));
-const Profile = lazy(() => import('./pages/Profile'));
-const SellerProfile = lazy(() => import('./pages/SellerProfile'));
-const NotFound = lazy(() => import('./pages/NotFound'));
+const Login = lazy(retryImport(() => import('./pages/Login')));
+const Register = lazy(retryImport(() => import('./pages/Register')));
+const ListingDetail = lazy(retryImport(() => import('./pages/ListingDetail')));
+const CreateListing = lazy(retryImport(() => import('./pages/CreateListing')));
+const EditListing = lazy(retryImport(() => import('./pages/EditListing')));
+const MyListings = lazy(retryImport(() => import('./pages/MyListings')));
+const Favourites = lazy(retryImport(() => import('./pages/Favourites')));
+const Messages = lazy(retryImport(() => import('./pages/Messages')));
+const Profile = lazy(retryImport(() => import('./pages/Profile')));
+const SellerProfile = lazy(retryImport(() => import('./pages/SellerProfile')));
+const NotFound = lazy(retryImport(() => import('./pages/NotFound')));
 
 export default function App() {
   return (
