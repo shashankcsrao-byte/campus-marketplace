@@ -40,21 +40,22 @@ A student-to-student marketplace for buying and selling second-hand items on cam
 
 ```mermaid
 flowchart LR
-  subgraph Browser["Browser (React SPA)"]
-    UI[Pages & components] --> Ctx[Contexts: Auth · Favourites · Toast]
+  subgraph Browser["Browser · React + TypeScript (built with Vite)"]
+    UI[Pages & components] --> Ctx[Contexts: Auth · Favourites · Unread · Toast]
     UI --> Hooks[Hooks: useListings · useChat · useDebounce]
-    Hooks --> Svc[Services layer]
+    Hooks --> Svc[Services: auth · listing · storage · favorite · chat · report]
     Ctx --> Svc
     Svc --> SB[supabase-js client<br/>src/lib/supabase.ts]
     Svc --> Geo[geocodingService]
   end
-  SB -- "REST (PostgREST)" --> PG[(Postgres + RLS)]
+  SB -- "REST (PostgREST)" --> PG[(Postgres + RLS<br/>6 tables · triggers · functions)]
   SB -- "Auth (JWT)" --> AUTH[Supabase Auth]
   SB -- "Storage API" --> ST[(Storage bucket<br/>listing-images)]
   SB -- "WebSocket" --> RT[Realtime<br/>postgres_changes]
   RT --- PG
   Geo -- HTTPS --> NOM[OpenStreetMap Nominatim]
-  Vercel[Vercel CDN] -. serves static build .-> Browser
+  Vercel[Vercel CDN<br/>+ security headers] -. serves static build .-> Browser
+  GH[GitHub Actions<br/>CI · keep-alive] -. "reads 1 row every 3 days" .-> PG
 ```
 
 **Rule of thumb:** components never talk to Supabase directly. They call `services/*`, which return typed data or throw; `utils/errorMessages.ts` turns any error into friendly text.
@@ -62,17 +63,20 @@ flowchart LR
 ```
 src/
   components/ui        Button, Input, Select, Textarea, Spinner, States, ConfirmDialog, Icons
-  components/listings  ListingCard, ListingGrid, ListingForm, ImageUploader, ImageGallery, LocationField, ListingFilters, FavoriteButton
+  components/listings  ListingCard, ListingGrid, ListingForm, ImageUploader, ImageGallery, LocationField, ListingFilters, FavoriteButton, ShareButtons, ReportButton
   components/chat      ChatList, ChatWindow
-  context/             AuthContext, FavoritesContext, ToastContext
-  hooks/               useListings (paging + realtime), useChat, useDebounce, useDocumentTitle
+  components/          Navbar, SearchBox, ErrorBoundary
+  context/             AuthContext, FavoritesContext, UnreadContext, ToastContext
+  hooks/               useListings (paging + realtime), useChat (realtime + older pages), useDebounce, useDocumentTitle
+  landing/             Animated signed-out home page (Landing, shapes, vendored scroll engine)
   layouts/             MainLayout
-  pages/               Home, Login, Register, ListingDetail, CreateListing, EditListing, MyListings, Favourites, Messages, Profile, NotFound
+  pages/               Home, Login, Register, ListingDetail, CreateListing, EditListing, MyListings, Favourites, Messages, Profile, SellerProfile, NotFound
   routes/              ProtectedRoute, GuestRoute
-  services/            authService, listingService, storageService, favoriteService, chatService, geocodingService
-  utils/               constants, validation, errorMessages, filters, format
-supabase/migrations/   0001…0005 SQL, run in order
-scripts/rls-test.mjs   Multi-account authorization test
+  services/            authService, listingService, storageService, favoriteService, chatService, reportService, geocodingService
+  utils/               constants, validation, errorMessages, filters, format, chunkReload
+supabase/migrations/   0001…0007 SQL, run in order
+scripts/               rls-test.mjs (live authorization test), test-db.mjs (database tests), seed-demo.mjs, m3-theme.mjs
+e2e/                   Playwright smoke tests
 ```
 
 ## Database
@@ -87,6 +91,60 @@ erDiagram
   profiles ||--o{ chats : "buyer / seller"
   chats ||--o{ messages : contains
   profiles ||--o{ messages : sends
+  listings ||--o{ reports : "reported in"
+  profiles ||--o{ reports : files
+
+  profiles {
+    uuid id PK "= auth user id"
+    text name "2-60 chars"
+    text campus
+    timestamptz created_at
+  }
+  listings {
+    uuid id PK
+    uuid seller_id FK "locked after insert"
+    text title "3-100 chars"
+    text description "10-2000 chars"
+    int price "1 to 1 crore"
+    listing_category category
+    listing_condition condition
+    text_array image_paths "1-5 photos"
+    listing_status status "available / sold"
+    text location_name
+    float latitude "rounded ~100 m"
+    float longitude
+    timestamptz created_at "set by server"
+    timestamptz updated_at
+  }
+  favorites {
+    uuid user_id PK, FK
+    uuid listing_id PK, FK
+    timestamptz created_at
+  }
+  chats {
+    uuid id PK
+    uuid listing_id FK "unique with buyer_id"
+    uuid buyer_id FK
+    uuid seller_id FK "must own the listing"
+    timestamptz last_message_at
+    timestamptz buyer_last_read_at
+    timestamptz seller_last_read_at
+  }
+  messages {
+    uuid id PK
+    uuid chat_id FK
+    uuid sender_id FK "must be you"
+    text body "1-2000 chars"
+    timestamptz created_at "set by server"
+  }
+  reports {
+    uuid id PK
+    uuid listing_id FK "unique with reporter_id"
+    uuid reporter_id FK
+    report_reason reason
+    text details "up to 500 chars"
+    timestamptz created_at
+  }
 ```
 
 | Table | Key columns | Notes |
