@@ -1,0 +1,45 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  check:
+    name: Typecheck, lint, unit + database tests, build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm test
+      - run: npm run test:db
+      - run: npm run build
+
+  e2e:
+    name: End-to-end smoke tests (public pages)
+    runs-on: ubuntu-latest
+    needs: check
+    # Needs the two public Supabase values as repository secrets (see README).
+    env:
+      VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+      VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Skip when secrets are not configured
+        id: secrets
+        run: echo "ok=${{ env.VITE_SUPABASE_URL != '' }}" >> "$GITHUB_OUTPUT"
+      - if: steps.secrets.outputs.ok == 'true'
+        run: npx playwright install --with-deps chromium
+      - if: steps.secrets.outputs.ok == 'true'
+        run: npm run test:e2e
