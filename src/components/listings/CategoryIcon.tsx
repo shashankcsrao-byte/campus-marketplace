@@ -28,16 +28,31 @@ const ICONS: Record<Category, (p: { className?: string }) => React.ReactElement>
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const CATEGORY_TINT: Record<Category, string> = {
-  Electronics: 'bg-sky',
-  Books: 'bg-sun',
-  Furniture: 'bg-tangerine',
-  Vehicles: 'bg-mint',
-  Clothing: 'bg-bubblegum',
-  Accessories: 'bg-brand-300',
-  Sports: 'bg-mint',
-  'Hostel Essentials': 'bg-sky',
-  Academic: 'bg-sun',
-  Other: 'bg-bubblegum-soft',
+  Electronics: 'bg-cat-electronics-container',
+  Books: 'bg-cat-books-container',
+  Furniture: 'bg-cat-furniture-container',
+  Vehicles: 'bg-cat-vehicles-container',
+  Clothing: 'bg-cat-clothing-container',
+  Accessories: 'bg-cat-accessories-container',
+  Sports: 'bg-cat-sports-container',
+  'Hostel Essentials': 'bg-cat-hostel-container',
+  Academic: 'bg-cat-academic-container',
+  Other: 'bg-cat-other-container',
+};
+
+/** Material custom-colour token slug per category (see src/m3-tokens.css). */
+// eslint-disable-next-line react-refresh/only-export-components
+export const CATEGORY_SLUG: Record<Category, string> = {
+  Electronics: 'electronics',
+  Books: 'books',
+  Furniture: 'furniture',
+  Vehicles: 'vehicles',
+  Clothing: 'clothing',
+  Accessories: 'accessories',
+  Sports: 'sports',
+  'Hostel Essentials': 'hostel',
+  Academic: 'academic',
+  Other: 'other',
 };
 
 export default function CategoryIcon({ category, className = 'size-4' }: { category: Category; className?: string }) {

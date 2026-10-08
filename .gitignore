@@ -31,3 +31,6 @@ dist-ssr
 # Local tooling
 .claude/
 .vercel
+
+# scroll-craft lab screenshots (regenerate with shoot.mjs)
+scrollcraft/builds/*/lab/

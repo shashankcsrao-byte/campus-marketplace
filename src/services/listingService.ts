@@ -137,3 +137,12 @@ export async function deleteListing(listing: Pick<Listing, 'id' | 'image_paths'>
   // The row is gone; failing to clean files is not the user's problem.
   removeImages(listing.image_paths).catch((err) => console.warn('Could not remove images', err));
 }
+
+/** Available listings per category (for the landing page's shelves). */
+export async function getCategoryCounts(): Promise<Partial<Record<Listing['category'], number>>> {
+  const { data, error } = await supabase.from('listings').select('category').eq('status', 'available');
+  if (error) throw error;
+  const counts: Partial<Record<Listing['category'], number>> = {};
+  for (const row of (data ?? []) as Pick<Listing, 'category'>[]) counts[row.category] = (counts[row.category] ?? 0) + 1;
+  return counts;
+}

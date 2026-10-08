@@ -60,7 +60,7 @@ export default function Navbar() {
   const loginHref = `/login?redirect=${encodeURIComponent(location.pathname + location.search)}`;
 
   return (
-    <header className="sticky top-0 z-40 border-b-2 border-ink bg-cream/95 backdrop-blur supports-[backdrop-filter]:bg-cream/85">
+    <header data-sc-shot-fixed className="sticky top-0 z-40 border-b-2 border-ink bg-cream/95 backdrop-blur supports-[backdrop-filter]:bg-cream/85">
       <div className="mx-auto flex h-16 max-w-7xl items-center gap-3 px-4 sm:px-6 lg:gap-6 lg:px-8">
         <Link to="/" className="group flex shrink-0 items-center gap-2 rounded-xl focus-visible:ring-4 focus-visible:ring-sun focus-visible:outline-none" aria-label={`${APP_NAME} home`}>
           <span className="flex size-10 -rotate-6 items-center justify-center rounded-xl border-2 border-ink bg-sun text-ink shadow-pop-sm transition-transform group-hover:rotate-6 motion-reduce:transition-none">

@@ -1,45 +1,23 @@
+/* The scroll engine's stylesheet sits in the lowest layer, so its page-wide
+   resets never override the app; its device rules (sticky stages etc.) still apply. */
+@import "./landing/engine/scrollcraft.css" layer(scrollcraft);
 @import "tailwindcss";
+/* Material 3 colour roles + harmonized custom colours (generated). */
+@import "./m3-tokens.css";
 
 /* ──────────────────────────────────────────────────────────────
-   Design system: "Playful Neubrutalism"
-   Thick ink outlines · hard offset shadows · flat pop colours ·
-   rounded chunky shapes · Fredoka headings + Nunito body
+   Design system: playful sticker UI on a Material 3 colour system.
+   Colours: src/m3-tokens.css (seed #7C3AED, Fidelity scheme).
+   Shapes: ink outlines, offset shadows, rounded chunky forms.
    ────────────────────────────────────────────────────────────── */
 @theme {
-  /* Primary (violet) — keeps the existing brand-* names so every component picks it up */
-  --color-brand-50: #f5f3ff;
-  --color-brand-100: #ede9fe;
-  --color-brand-200: #ddd6fe;
-  --color-brand-300: #c4b5fd;
-  --color-brand-400: #a78bfa;
-  --color-brand-500: #8b5cf6;
-  --color-brand-600: #7c3aed;
-  --color-brand-700: #6d28d9;
-  --color-brand-800: #5b21b6;
-
-  /* Ink + paper */
-  --color-ink: #1a1033;
-  --color-cream: #fff8ec;
-
-  /* Pop accents (always paired with ink text for 4.5:1+) */
-  --color-sun: #ffd43b;
-  --color-sun-soft: #fff3bf;
-  --color-bubblegum: #ff7ab6;
-  --color-bubblegum-soft: #ffe0ef;
-  --color-mint: #3ddc97;
-  --color-mint-soft: #d3f9e6;
-  --color-sky: #6cc4ff;
-  --color-sky-soft: #dbf0ff;
-  --color-tangerine: #ff9248;
-  --color-tangerine-soft: #ffe6d4;
-
   --font-sans: "Nunito", system-ui, sans-serif;
   --font-display: "Fredoka", "Nunito", system-ui, sans-serif;
 
   /* Hard "sticker" shadows */
-  --shadow-pop-sm: 2px 2px 0 0 #1a1033;
-  --shadow-pop: 4px 4px 0 0 #1a1033;
-  --shadow-pop-lg: 6px 6px 0 0 #1a1033;
+  --shadow-pop-sm: 2px 2px 0 0 #1d1a24;
+  --shadow-pop: 4px 4px 0 0 #1d1a24;
+  --shadow-pop-lg: 6px 6px 0 0 #1d1a24;
 
   --animate-slide-in: slide-in 260ms cubic-bezier(0.34, 1.56, 0.64, 1);
   --animate-fade-in: fade-in 200ms ease-out;
@@ -78,13 +56,15 @@
 
 @layer base {
   html {
+    /* The scroll engine turns smooth scrolling on globally; route changes should jump. */
+    scroll-behavior: auto;
     -webkit-tap-highlight-color: transparent;
     touch-action: manipulation;
   }
   body {
     @apply bg-cream text-ink antialiased;
     /* Subtle dot-grid paper */
-    background-image: radial-gradient(rgb(26 16 51 / 0.08) 1px, transparent 1px);
+    background-image: radial-gradient(rgb(29 26 36 / 0.07) 1px, transparent 1px);
     background-size: 22px 22px;
   }
   h1, h2, h3 {
@@ -98,12 +78,15 @@
   button:disabled {
     cursor: not-allowed;
   }
+  body {
+    overflow-x: clip;
+  }
   ::selection {
     background: var(--color-sun);
     color: var(--color-ink);
   }
   dialog::backdrop {
-    background: rgb(26 16 51 / 0.55);
+    background: rgb(29 26 36 / 0.55);
   }
 }
 
