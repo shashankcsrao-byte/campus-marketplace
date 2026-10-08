@@ -11,15 +11,18 @@ A student-to-student marketplace for buying and selling second-hand items on cam
 | Area | What it does |
 | --- | --- |
 | **Auth** | Register / login / logout, session survives refresh, protected routes with redirect-back, editable profile |
-| **Listings** | Create, view, edit, delete; title, description, ₹ price, 10 fixed categories; validation in the browser **and** in the database |
+| **Listings** | Create, view, edit, delete; title, description, ₹ price, 10 fixed categories, item condition (Brand new / Like new / Used / For parts); validation in the browser **and** in the database |
 | **Images** | 1–5 photos per listing, drag-and-drop, preview, "make cover", client-side compression to WebP (max 1600 px) |
 | **Mark as sold** | Greyscale image, diagonal SOLD ribbon, struck-through price, Contact Seller hidden |
-| **Search & filters** | Case-insensitive search across title + description, category chips, price range, status, 3 sort orders; all done in the DB; state kept in the URL (shareable, back-button friendly) |
+| **Search & filters** | Case-insensitive search across title + description, category chips, condition, price range, status, 3 sort orders; all done in the DB; state kept in the URL (shareable, back-button friendly); "Load more" fetches only the next page |
 | **Favourites** | Optimistic heart toggle, persisted per user, auto-removed when a listing is deleted |
 | **Location** | OpenStreetMap Nominatim geocoding, approximate (~100 m) coordinates, "View map" link |
-| **Real-time chat** | One chat per buyer per listing, live messages, chat list re-orders on new messages |
+| **Real-time chat** | One chat per buyer per listing, live messages, chat list re-orders on new messages, **unread badges** (navbar + per chat), "Load older messages", safety tips, seller can **mark sold from the chat** |
+| **Seller profiles** | `/u/:id`: name, campus, member since, items for sale and sold; linked from every listing and chat |
+| **Share & report** | Native share sheet (copy-link fallback) and a WhatsApp link; "Report listing" with reasons, one report per user per listing |
+| **Safety** | Server-set timestamps, per-user rate limits (listings, messages, chats, reports), read-only access for logged-out visitors, security headers (CSP, frame blocking) |
 | **Real-time feed** | New, edited, sold or deleted listings appear in other open windows without refreshing |
-| **Polish** | Skeletons, empty and error states with retry, toasts, responsive from 360 px, keyboard accessible, `prefers-reduced-motion`, lazy-loaded pages |
+| **Polish** | Skeletons, empty and error states with retry, toasts, responsive from 360 px, keyboard accessible, `prefers-reduced-motion`, lazy-loaded pages, error screen instead of a blank page, automatic reload when a redeploy removes old files |
 
 ## Tech stack
 
@@ -93,6 +96,14 @@ erDiagram
 | `favorites` | PK `(user_id, listing_id)` | Composite PK makes duplicates impossible; cascades on listing delete |
 | `chats` | `listing_id`, `buyer_id`, `seller_id`, `last_message_at` | `unique(listing_id, buyer_id)`, `check(buyer_id <> seller_id)` |
 | `messages` | `chat_id`, `sender_id`, `body` | Trigger bumps `chats.last_message_at` so the list re-orders |
+| `reports` | `listing_id`, `reporter_id`, `reason` (enum), `details` | `unique(listing_id, reporter_id)`; you can't report your own listing; only the project owner reads them (Table Editor) |
+
+Added in `0006`/`0007`:
+- **Server timestamps:** `before insert` triggers set `created_at` (and `updated_at`, `last_message_at`, read markers) to `now()`, so nobody can back- or future-date a listing or message.
+- **Rate limits:** triggers refuse more than 10 listings per user per 24 h, 30 messages per minute, 20 new chats per hour and 20 reports per day.
+- **Unread tracking:** `chats.buyer_last_read_at` / `seller_last_read_at`; `my_unread_counts()` returns counts per chat; `mark_chat_read(chat_id)` (security definer) only moves the caller's own marker.
+- **`category_counts()`:** counts available listings per category in the database for the landing page.
+- **No anonymous writes:** `insert/update/delete` privileges are revoked from `anon` (RLS already blocked them).
 
 ## Authentication
 
@@ -160,7 +171,8 @@ PASS  C cannot create a chat as B
 
 Supabase Realtime `postgres_changes` (tables added to the `supabase_realtime` publication; RLS still applies to what each user receives):
 
-- **Marketplace feed** (`useListings`): any insert/update/delete on `listings` schedules a re-fetch of the current page range after 500 ms (debounced, so bursts cause one request).
+- **Marketplace feed** (`useListings`): any insert/update/delete on `listings` schedules a re-fetch of the rows on screen after 500 ms (debounced, so bursts cause one request).
+- **Unread badges** (`UnreadContext`): new messages and read-marks in my chats refresh the counts.
 - **Listing detail**: listens for `UPDATE` on that one row.
 - **Chat** (`useChat`): `INSERT` on `messages` filtered by `chat_id`; de-duplicated by id so your own message never shows twice.
 - **Chat list**: any change on `chats` (new chat or `last_message_at` bump) re-orders the list.
@@ -176,7 +188,7 @@ cp .env.example .env        # fill in the two VITE_ values
 ```
 
 1. Create a Supabase project (region: **South Asia (Mumbai)**).
-2. **SQL Editor** → run `supabase/migrations/0001_profiles.sql` … `0005_chat.sql` **in order**.
+2. **SQL Editor** → run `supabase/migrations/0001_profiles.sql` … `0007_features.sql` **in order**.
 3. **Authentication → Sign In / Providers → Email**: turn **Confirm email** off.
 4. **Authentication → URL Configuration**: Site URL `http://localhost:5173`.
 5. `npm run dev` → http://localhost:5173
@@ -195,7 +207,7 @@ The `service_role` / secret key is **never** used by the app.
 
 1. Push to GitHub (check that `git ls-files | grep .env` shows only `.env.example`).
 2. Vercel → Add New → Project → import repo (preset: Vite) → add the two `VITE_` env vars → Deploy.
-3. `vercel.json` rewrites every path to `index.html` so refreshing `/listing/…` doesn't 404.
+3. `vercel.json` rewrites every page path (not `/assets/`) to `index.html` so refreshing `/listing/…` works, while a missing old file returns a real 404 and the app reloads itself. It also sets the security headers.
 4. Supabase → Authentication → URL Configuration: Site URL = Vercel URL; keep `http://localhost:5173` in Redirect URLs.
 5. Supabase → Advisors → Security Advisor: fix every warning.
 
@@ -213,8 +225,8 @@ The `service_role` / secret key is **never** used by the app.
 
 ## Future improvements
 
-- Unread message counts and push/email notifications
-- Image moderation and report-a-listing flow
+- Push/email notifications for new messages
+- Image moderation and an admin view for reports
 - Campus-verified sign-up (college email domains) with custom SMTP
 - Offers / price negotiation, seller ratings
 - Map view of nearby listings, distance sorting with PostGIS
@@ -223,7 +235,7 @@ The `service_role` / secret key is **never** used by the app.
 
 ## Demo data
 
-`node --env-file=.env scripts/seed-demo.mjs` creates 50 demo student accounts (`@demo.campusmart.app`), ~75 listings with generated images, favourites and chats, all through the public API so RLS applies. It paces sign-ups to respect Supabase's rate limit (~10 min). The demo password is saved to `.demo-accounts.local` (git-ignored).
+`node --env-file=.env scripts/seed-demo.mjs` creates 50 demo student accounts (`@demo.campusmart.app`), ~75 listings with generated images, favourites and chats, all through the public API so RLS applies. It paces sign-ups to respect Supabase's rate limit (~10 min). The demo password is saved to `.demo-accounts.local` (git-ignored). Since migration `0006`, the database sets every timestamp itself, so re-running the seed makes all demo listings "just now" instead of spreading them over three weeks.
 
 ## Scripts
 
@@ -233,5 +245,20 @@ The `service_role` / secret key is **never** used by the app.
 | `npm run build` | Type-check + production build |
 | `npm run preview` | Serve the production build locally |
 | `npm run lint` | oxlint |
-| `node --env-file=.env scripts/rls-test.mjs` | Authorization tests |
+| `npm test` | Unit + component tests (Vitest, Testing Library) |
+| `npm run test:db` | Database tests: every migration in an in-memory Postgres, then RLS, triggers and rate limits as different users. No Supabase needed |
+| `npm run test:e2e` | Playwright smoke tests of the public pages against a production build (reads `.env`) |
+| `node --env-file=.env scripts/rls-test.mjs` | Authorization tests against the live project |
 | `node --env-file=.env scripts/seed-demo.mjs` | Demo data (50 students, ~75 listings) |
+
+## Continuous integration and keep-alive
+
+- `.github/workflows/ci.yml` runs lint, unit tests, database tests and the build on every push and pull request. The end-to-end job runs only when the repository has the two secrets below.
+- `.github/workflows/keep-alive.yml` reads one listing every 3 days so the free Supabase project doesn't pause. GitHub turns off scheduled workflows in repositories with no activity for 60 days, so push something occasionally (or re-enable it in the Actions tab).
+
+Both use these repository secrets (the same public values the website ships):
+
+```bash
+gh secret set VITE_SUPABASE_URL
+gh secret set VITE_SUPABASE_PUBLISHABLE_KEY
+```
