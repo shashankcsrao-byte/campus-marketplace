@@ -5,3 +5,8 @@
 .claude
 node_modules
 dist
+
+# Local test output (never needed for the build)
+scrollcraft/builds/*/lab
+test-results
+playwright-report
